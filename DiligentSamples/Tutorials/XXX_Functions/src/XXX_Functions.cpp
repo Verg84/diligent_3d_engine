@@ -223,6 +223,7 @@ namespace Diligent
         PipelineStateInit();
         LoadVertices();
         LoadIndices();
+        LoadTexture();
     }
     void Functions::SetUniformMatrix()
     {
