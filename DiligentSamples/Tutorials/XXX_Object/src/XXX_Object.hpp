@@ -31,24 +31,28 @@ namespace Diligent{
             const std::array<Uint32, NI> Indices;
 
 			RefCntAutoPtr<IBuffer> CreateVertexBuffer(IRenderDevice* pDevice, VERTEX_FLAGS VertexFlags, BIND_FLAGS BindFlags = BIND_VERTEX_BUFFER, BUFFER_MODE BufferMode = BUFFER_MODE_UNDEFINED);
-            RefCntAutoPtr<IBuffer> CreateIndexBuffr(IRenderDevice* pDevice, BIND_FLAGS BindFlags = BIND_INDEX_BUFFER, BUFFER_MODE BuferMode = BUFFER_MODE_UNDEFINED);
+            RefCntAutoPtr<IBuffer> CreateIndexBuffer(IRenderDevice* pDevice, BIND_FLAGS BindFlags = BIND_INDEX_BUFFER, BUFFER_MODE BuferMode = BUFFER_MODE_UNDEFINED);
             RefCntAutoPtr<ITexture> LoadTexture(IRenderDevice* pDevice, const char* Path);
 
 			// create pipeline state parameters
-			struct PipelineStateParamsInit
+			struct CreatePSOInfo
 			{
                 IRenderDevice* pDevice = nullptr;
-                TEXTURE_FORMAT pRTV    = TEX_FORMAT_UNKNOWN;
+                
+				TEXTURE_FORMAT pRTV    = TEX_FORMAT_UNKNOWN;
                 TEXTURE_FORMAT pDSV    = TEX_FORMAT_UNKNOWN;
-                IShaderSourceInputStreamFactory *pShaderSourceFactory = nullptr;
+                
+				IShaderSourceInputStreamFactory *pShaderSourceFactory = nullptr;
                 const char*  VSFilePath = nullptr;
 				const char* PSFilePath =nullptr;
+				
 				VERTEX_FLAGS Vertex_Flags=NONE_FLAG;
 				LayoutElement* ExtraLayoutElements=nullptr;
                 Uint32 NumExtraLayoutElems  = 0;
                 Uint8  SampleCount          = 1;
+                
 			};
-            RefCntAutoPtr<IPipelineState> CreatePipelineState(const PipelineStateParamsInit& pipeline_params);
+            RefCntAutoPtr<IPipelineState> CreatePipelineState(const CreatePSOInfo& pipeline_params);
 
 			
 	};
