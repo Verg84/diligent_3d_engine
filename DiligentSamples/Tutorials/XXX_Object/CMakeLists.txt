@@ -12,7 +12,7 @@ set(INCLUDE
 
 set(SHADERS
     assets/vertex_shader_source.vsh
-    assets/fragment_shader_source.psh
+    assets/pixel_shader_source.psh
 )
 
 set(ASSETS
