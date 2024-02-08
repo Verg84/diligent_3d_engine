@@ -5,6 +5,14 @@ namespace Diligent
 	{
         return new Instancing();
     }
+    void Instancing::CreateInstanceBuffer()
+    {
+        BufferDesc InstBufferDesc;
+        InstBufferDesc.Name = "Instance Buffer Desc";
+        InstBufferDesc.Usage = USAGE_DEFAULT;
+        InstBufferDesc.BindFlags = BIND_VERTEX_BUFFER;
+        InstBufferDesc.Size      = sizeof(float4x4) * MaxInstances;
+    }
     void Instancing::CreateUniformBuffer()
     {
         BufferDesc uniformBufferDesc;

@@ -19,7 +19,13 @@ private:
     RefCntAutoPtr<IPipelineState> pipeline_handler;
     RefCntAutoPtr<IBuffer> uniform_buffer;
     RefCntAutoPtr<IShaderResourceBinding> resource_binding;
+    float4x4 RotationMat;
+    float4x4 ViewProjMat;
+    int mGridSize=5;
+    static constexpr int MaxGridSize=32;
+    static constexpr int MaxInstances=MaxGridSize*MaxGridSize*MaxGridSize;
     void CreatePipelineState();   
     void CreateUniformBuffer();
+    void CreateInstanceBuffer();
 };
 }

@@ -17,6 +17,7 @@ set(SHADERS
 
 set(ASSETS
     assets/DGLogo.png
+	assets/spider.off
 )
 
 add_sample_app("XXX_Mesh" "DiligentSamples/Tutorials" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
