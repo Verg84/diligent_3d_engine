@@ -1,23 +1,10 @@
 #include"Mesh.hpp"
 
-namespace Diligent
+
+
+
+int main()
 {
-	SampleBase* CreateSample()
-	{
-        return new Mesh();
-    }
-    void Mesh::Initialize(const SampleInitInfo& InitInfo)
-    {
-        SampleBase::Initialize(InitInfo);
+    return 0;
+}
 
-    }
-    void Mesh::Render()
-    {
-        
-    }
-    void Mesh::Update(double ctime, double etime)
-    {
-        SampleBase::Update(ctime, etime);
-    }
-
-    }
