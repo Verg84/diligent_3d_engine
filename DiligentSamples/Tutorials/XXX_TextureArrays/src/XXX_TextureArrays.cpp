@@ -202,17 +202,27 @@ void TextureArray::Render()
     m_pImmediateContext->DrawIndexed(drawAttrs);
 
 }
+void TextureArray::UpdateUI()
+{
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+    if (ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        if (ImGui::SliderInt("Grid Size", &m_GridSize, 1, 32))
+        {
+            PopulateInstanceBuffer();
+        }
+    }
+    ImGui::End();
+}
 void TextureArray::Update(double ctime, double etime)
 {
     SampleBase::Update(ctime, etime);
-
+    UpdateUI();
     // set View Matrix
     float4x4 View            = float4x4::RotationX(-0.6f) * float4x4::Translation(0.0f, 0.0f, 4.0f);
     auto     SrfPerTransform = GetSurfacePretransformMatrix(float3(0, 0, 1));
     auto     Proj            = GetAdjustedProjectionMatrix(PI_F / 4.0f, 0.1f, 100.f);
     VProj                    = View * SrfPerTransform * Proj;
-
-  
 }
 
 }
