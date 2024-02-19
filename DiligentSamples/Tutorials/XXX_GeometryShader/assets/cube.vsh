@@ -2,7 +2,7 @@
 
 cbuffer VSConstants
 {
-    Constants g_constants;
+    Constants g_Constants;
 };
 struct VSInput
 {
@@ -11,7 +11,7 @@ struct VSInput
 };
 void main(in VSInput VSIn,out VSOutput VSOut)
 {
-    VSOut.Pos = mul(float4(VSIn.Pos, 1.0), g_constants.WorldViewProj);
+    VSOut.Pos = mul(float4(VSIn.Pos, 1.0), g_Constants.WorldViewProj);
     VSOut.UV = VSIn.UV;
 
 }

@@ -1,5 +1,10 @@
 #include"XXX_GeometryShader.hpp"
-
+#include "MapHelper.hpp"
+#include "GraphicsUtilities.h"
+#include "TextureUtilities.h"
+#include "ColorConversion.h"
+#include "../../Common/src/TexturedCube.hpp"
+#include "imgui.h"
 namespace Diligent
 {
     SampleBase* CreateSample()
@@ -15,12 +20,21 @@ namespace Diligent
     void GeometryShader::CreateUniformBuffer()
     {
         BufferDesc unifDesc;
-        unifDesc.Name = "Vertex Shader Constants";
+        unifDesc.Name = "Shader Constants";
         unifDesc.BindFlags = BIND_UNIFORM_BUFFER;
         unifDesc.Usage     = USAGE_DYNAMIC;
         unifDesc.CPUAccessFlags = CPU_ACCESS_WRITE;
         unifDesc.Size           = sizeof(Constants);
         m_pDevice->CreateBuffer(unifDesc, nullptr, &Shader_Constants);
+    }
+    void GeometryShader::UpdateUI()
+    {
+        ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+        if (ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::SliderFloat("Line Width", &line_width, 1.f, 10.f);
+        }
+        ImGui::End();
     }
     void GeometryShader::CreatePipelineState()
     {
@@ -69,6 +83,9 @@ namespace Diligent
             ShaderCI.EntryPoint      = "main";
             ShaderCI.FilePath        = "cube.psh";
         }
+        pso.pVS = pVS;
+        pso.pPS = pPS;
+        pso.pGS = pGS;
 
         LayoutElement elems[] =
             {
@@ -101,11 +118,27 @@ namespace Diligent
         pso.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(imm);
 
         m_pDevice->CreateGraphicsPipelineState(pso, &pipeline_handler);
+        pipeline_handler->GetStaticVariableByName(SHADER_TYPE_VERTEX, "VSConstants")->Set(Shader_Constants);
+        pipeline_handler->GetStaticVariableByName(SHADER_TYPE_PIXEL, "PSConstants")->Set(Shader_Constants);
+        pipeline_handler->GetStaticVariableByName(SHADER_TYPE_PIXEL, "GSConstants")->Set(Shader_Constants);
+
+        pipeline_handler->CreateShaderResourceBinding(&resource_binding, true);
+
+
 
     }
+    void GeometryShader::ModifyEngineInitInfo(const ModifyEngineInitInfoAttribs& Attribs)
+    {
+        SampleBase::ModifyEngineInitInfo(Attribs);
+
+        Attribs.EngineCI.Features.GeometryShaders = DEVICE_FEATURE_STATE_ENABLED;
+    }
+
     void GeometryShader::Initialize(const SampleInitInfo &InitInfo)
     {
         SampleBase::Initialize(InitInfo);
+        CreatePipelineState();
+        
     }
     void GeometryShader::Render()
     {
