@@ -12,7 +12,14 @@ namespace Diligent
 	SampleBase* CreateSample()
 	{
         return new Instancing();
-	}
+    }
+    namespace
+    {
+    struct InstanceData
+    {
+        float4x4 Matrix;
+    };
+    } // namespace
     void Instancing::UpdateUI()
     {
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
@@ -30,7 +37,7 @@ namespace Diligent
     {
         // Populate instance data buffer
         const auto            zGridSize = static_cast<size_t>(m_GridSize);
-        std::vector<float4x4> InstanceData(zGridSize * zGridSize * zGridSize);
+        std::vector<InstanceData> InstanceData(zGridSize * zGridSize * zGridSize);
 
         float fGridSize = static_cast<float>(m_GridSize);
 
@@ -61,7 +68,9 @@ namespace Diligent
                     rotation *= float4x4::RotationZ(rot_distr(gen));
                     // Combine rotation, scale and translation
                     float4x4 matrix        = rotation * float4x4::Scale(scale, scale, scale) * float4x4::Translation(xOffset, yOffset, zOffset);
-                    InstanceData[instId++] = matrix;
+                    auto& CurrInst = InstanceData[instId++];
+                    CurrInst.Matrix        = matrix;
+                    
                 }
             }
         }
