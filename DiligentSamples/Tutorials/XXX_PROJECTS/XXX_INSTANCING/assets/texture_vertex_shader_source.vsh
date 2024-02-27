@@ -1,4 +1,4 @@
-cbuffer Vertex_Uniform
+cbuffer Vertex_Uniform_Variables
 {
     float4x4 VP;
     float4x4 Rotation;
@@ -27,7 +27,7 @@ void main(in VSInput VSIn,out PSInput PSIn)
     float4x4 InstanceMat = MatrixFromRows(VSIn.Row0, VSIn.Row1, VSIn.Row2, VSIn.Row3);
     
     // Apply Rotation
-    float4x4 Position = mul(float4(VSIn.Pos, 1.0), Rotation);
+    float4 Position = mul(float4(VSIn.Pos, 1.0), Rotation);
     
     // Apply Instance Transform
     Position = mul(Position, InstanceMat);
