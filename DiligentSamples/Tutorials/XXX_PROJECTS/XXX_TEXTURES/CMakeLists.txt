@@ -19,5 +19,5 @@ set(ASSETS
     assets/DGLogo.png
 )
 
-add_sample_app("TEXTURES" "DiligentSamples/Tutorials" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
+add_sample_app("TEXTURES" "DiligentSamples/Tutorials/XXX_PROJECTS" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
 target_link_libraries(TEXTURES PRIVATE Diligent-TextureLoader)

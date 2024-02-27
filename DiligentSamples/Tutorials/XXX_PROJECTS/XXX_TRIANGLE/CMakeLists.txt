@@ -17,4 +17,4 @@ set(SHADERS
 
 set(ASSETS)
 
-add_sample_app("XXX_TRIANGLE" "DiligentSamples/Tutorials" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
+add_sample_app("XXX_TRIANGLE" "DiligentSamples/Tutorials/XXX_PROJECTS" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
