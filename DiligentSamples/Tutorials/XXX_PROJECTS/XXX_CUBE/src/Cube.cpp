@@ -36,15 +36,15 @@ namespace Diligent
         // clang-format off
     Vertex CubeVerts[8] =
     {
-        {float3(-1,-1,-1), float4(1,0,0,1)},
-        {float3(-1,+1,-1), float4(0,1,0,1)},
-        {float3(+1,+1,-1), float4(0,0,1,1)},
-        {float3(+1,-1,-1), float4(1,1,1,1)},
+        {float3(-1,-1,-1)},
+        {float3(-1,+1,-1)},
+        {float3(+1,+1,-1)},
+        {float3(+1,-1,-1)},
 
-        {float3(-1,-1,+1), float4(1,1,0,1)},
-        {float3(-1,+1,+1), float4(0,1,1,1)},
-        {float3(+1,+1,+1), float4(1,0,1,1)},
-        {float3(+1,-1,+1), float4(0.2f,0.2f,0.2f,1)},
+        {float3(-1,-1,+1)},
+        {float3(-1,+1,+1)},
+        {float3(+1,+1,+1)},
+        {float3(+1,-1,+1)},
     };
      Uint32 Indices[] =
     {

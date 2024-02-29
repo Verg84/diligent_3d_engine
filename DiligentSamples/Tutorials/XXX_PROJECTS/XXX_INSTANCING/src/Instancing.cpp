@@ -205,10 +205,12 @@ namespace Diligent
             m_pDevice->CreateShader(sci, &pixel_shader);
 		}
 
+        CreateUniformBuffer();
+
+
 		pso.pVS = vertex_shader;
         pso.pPS = pixel_shader;
 
-        CreateUniformBuffer();
 		LayoutElement elems[] =
             {
                 LayoutElement{0, 0, 3, VT_FLOAT32, False},
