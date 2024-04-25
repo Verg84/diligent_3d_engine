@@ -12,9 +12,9 @@ void main(in uint VertId:SV_VertexID, out PSInput PSIn)
     Pos[2] = float4(0.5, -0.5, 0.0, 1.0);
 
     float3 Col[3];
-    Col[0] = float4(1.0, 0.0, 0.0);
-    Col[1] = float4(0.0, 1.0, 0.0);
-    Col[2] = float4(0.0, 0.0, 1.0);
+    Col[0] = float3(1.0, 0.0, 0.0);
+    Col[1] = float3(0.0, 1.0, 0.0);
+    Col[2] = float3(0.0, 0.0, 1.0);
 
     PSIn.Pos = Pos[VertId];
     PSIn.Color = Col[VertId];
