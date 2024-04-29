@@ -2,3 +2,5 @@ cmake_minimum_required (VERSION 3.6)
 
 add_subdirectory(GLSLLoading)
 add_subdirectory(VERTEX_BUFFERS)
+add_subdirectory(INDEX_BUFFERS)
+add_subdirectory(UNIFORM_BUFFERS)

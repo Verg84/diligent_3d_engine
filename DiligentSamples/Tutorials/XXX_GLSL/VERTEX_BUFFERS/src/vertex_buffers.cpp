@@ -75,6 +75,7 @@ void VertexBuffers::CreatePipeline()
     LayoutElement vertexAttributes[] =
         {
             LayoutElement{0, 0, 3, VT_FLOAT32, False}};
+
     PSOCreateInfo.GraphicsPipeline.InputLayout.NumElements = _countof(vertexAttributes);
     PSOCreateInfo.GraphicsPipeline.InputLayout.LayoutElements = vertexAttributes;
 
