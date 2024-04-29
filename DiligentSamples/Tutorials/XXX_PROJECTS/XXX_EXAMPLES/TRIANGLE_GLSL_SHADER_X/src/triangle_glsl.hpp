@@ -16,5 +16,7 @@ namespace Diligent
 
     private:
         RefCntAutoPtr<IPipelineState> m_pPSO;
+
+        
 	};
 }
