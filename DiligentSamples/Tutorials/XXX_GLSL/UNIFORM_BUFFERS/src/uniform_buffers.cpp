@@ -102,7 +102,6 @@ void UniformBuffers::CreatePipeline()
     PSOCreateInfo.pVS = VS;
     PSOCreateInfo.pPS = PS;
 
-    CreateUniformBuffers();
 
     LayoutElement vertex_attributes[] =
         {
@@ -111,6 +110,8 @@ void UniformBuffers::CreatePipeline()
     PSOCreateInfo.GraphicsPipeline.InputLayout.NumElements    = _countof(vertex_attributes);
 
     PSOCreateInfo.PSODesc.ResourceLayout.DefaultVariableType = SHADER_RESOURCE_VARIABLE_TYPE_STATIC;
+    CreateUniformBuffers();
+
 
     m_pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &m_pPSO);
 
