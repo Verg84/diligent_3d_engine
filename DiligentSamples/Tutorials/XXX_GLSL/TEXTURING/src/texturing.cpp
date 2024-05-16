@@ -164,7 +164,7 @@ void Texturing::CreatePipeline()
     PSOCreateInfo.PSODesc.ResourceLayout.ImmutableSamplers = imtbl;
     PSOCreateInfo.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(imtbl);
 
-
+    a
     m_pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &m_pPSO);
     m_pPSO->GetStaticVariableByName(SHADER_TYPE_VERTEX, "Constants")->Set(VSConstants);
 
