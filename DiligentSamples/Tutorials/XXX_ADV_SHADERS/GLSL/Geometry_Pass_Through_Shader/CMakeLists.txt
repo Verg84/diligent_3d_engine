@@ -22,5 +22,5 @@ set(ASSETS
     assets/DGLogo.png
 )
 
-add_sample_app("GeometryShader_PassThrought" "DiligentSamples/Tutorials/XXX_ADV_SHADERS" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
+add_sample_app("GeometryShader_PassThrought" "DiligentSamples/Tutorials/XXX_ADV_SHADERS/GLSL" "${SOURCE}" "${INCLUDE}" "${SHADERS}" "${ASSETS}")
 

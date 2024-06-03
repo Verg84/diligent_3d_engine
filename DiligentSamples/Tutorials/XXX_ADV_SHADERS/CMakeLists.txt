@@ -3,3 +3,4 @@ cmake_minimum_required (VERSION 3.6)
 
 add_subdirectory(Geometry_Shaders)
 add_subdirectory(GLSL)
+add_subdirectory(HLSL)
