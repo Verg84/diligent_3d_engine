@@ -1,0 +1,29 @@
+#include"structures.fxh"
+
+cbuffer PSConstants {
+    Constants g_Constants;
+};
+
+struct PSOutput
+{
+    float4 Color : SV_TARGET;
+};
+
+void main(
+    in GSOutput PSIn,
+    out PSOutput PSOut)
+{
+    float4 Color = float4(1.0, 0.0, 0.0, 1.0);
+
+    // Distance to Closest Edge
+    float minDist = min(PSIn.DistToEdges.x, PSIn.DistToEdges.y);
+    minDist       = min(minDist, PSIn.DistToEdges.z);
+
+    float lineWidth = g_Constants.LineWidth;
+    float lineIntensity = saturate((lineWidth - minDist) / lineWidth);
+
+    float EdgeColor = float3(0.0, 1.0, 0.0);
+    Color.rgb       = lerp(Color.rgb, EdgeColor, lineIntensity);
+
+    PSOut.Color = Color;
+}
