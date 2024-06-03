@@ -12,5 +12,11 @@ public:
     {
         return "Geometry Shader";
     }
+    private:
+    RefCntAutoPtr<IPipelineState> m_PSO;
+    RefCntAutoPtr<IBuffer> VertexBuffer;
+
+    void CreatePipeline();
+    void LoadBuffers();
 };
 } // namespace Diligent
