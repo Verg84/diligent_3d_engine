@@ -23,8 +23,8 @@ struct Constants
     float4x4 ViewProjMat;
     float4 Frustum[6];
 
-    float CoTanHalfFOV;
-    float CurTime;
+    float CoTanHalfFov;
+    float CurrTime;
     uint FrustumCulling;
     uint Padding;
 };
@@ -35,6 +35,6 @@ struct Payload
     float PosY[GROUP_SIZE];
     float PosZ[GROUP_SIZE];
     float Scale[GROUP_SIZE];
-    float LOD[GROUP_SIZE]
+    float LOD[GROUP_SIZE];
 
 };

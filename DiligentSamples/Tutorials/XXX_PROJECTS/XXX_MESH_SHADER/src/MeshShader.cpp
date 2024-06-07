@@ -1,29 +1,5 @@
-/*
- *  Copyright 2019-2022 Diligent Graphics LLC
- *  Copyright 2015-2019 Egor Yusov
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  In no event and under no legal theory, whether in tort (including negligence),
- *  contract, or otherwise, unless required by applicable law (such as deliberate
- *  and grossly negligent acts) or agreed to in writing, shall any Contributor be
- *  liable for any damages, including any direct, indirect, special, incidental,
- *  or consequential damages of any character arising as a result of this License or
- *  out of the use or inability to use the software (including but not limited to damages
- *  for loss of goodwill, work stoppage, computer failure or malfunction, or any and
- *  all other commercial damages or losses), even if such Contributor has been advised
- *  of the possibility of such damages.
- */
+#include<array>
+#include"MeshShader.hpp"
 
 #include <array>
 
@@ -36,20 +12,19 @@
 #include "ImGuiUtils.hpp"
 #include "FastRand.hpp"
 #include "AdvancedMath.hpp"
-#include "../../Common/src/TexturedCube.hpp"
+#include "../../../Common/src/TexturedCube.hpp"
+
 
 namespace Diligent
 {
 namespace
 {
-
 #include "../assets/structures.fxh"
 
 struct DrawStatistics
 {
     Uint32 visibleCubes;
 };
-
 static_assert(sizeof(DrawTask) % 16 == 0, "Structure must be 16-byte aligned");
 
 } // namespace
@@ -61,12 +36,12 @@ SampleBase* CreateSample()
 
 void MeshShader::CreateCube()
 {
-    // Pack float3 positions into float4 vectors
     std::array<float4, TexturedCube::NumVertices> CubePos{};
     for (Uint32 v = 0; v < TexturedCube::NumVertices; ++v)
+    {
         CubePos[v] = TexturedCube::Positions[v];
+    }
 
-    // Pack float2 texcoords into float4 vectors
     std::array<float4, TexturedCube::NumVertices> CubeUV{};
     for (Uint32 v = 0; v < TexturedCube::NumVertices; ++v)
     {
@@ -74,66 +49,62 @@ void MeshShader::CreateCube()
         CubeUV[v] = {UV.x, UV.y, 0, 0};
     }
 
-    // Pack each triangle indices into uint4
-    std::array<uint4, TexturedCube::NumIndices / 3> Indices{};
+    std::array<float4, TexturedCube::NumIndices / 3> Indices{};
     for (size_t tri = 0; tri < Indices.size(); ++tri)
     {
         const auto* src_ind{&TexturedCube::Indices[tri * 3]};
-        Indices[tri] = {src_ind[0], src_ind[1], src_ind[2], 0};
+        Indices[tri] = {
+            src_ind[0],
+            src_ind[1],
+            src_ind[2],
+            0};
     }
     CubeData Data;
-
-    // radius of circumscribed sphere = (edge_length * sqrt(3) / 2)
     Data.SphereRadius = float4{length(CubePos[0] - CubePos[1]) * std::sqrt(3.0f) * 0.5f, 0, 0, 0};
 
-    std::memcpy(Data.Positions, CubePos.data(), CubePos.size() * sizeof(CubePos[0]));
-    std::memcpy(Data.UVs, CubeUV.data(), CubeUV.size() * sizeof(CubeUV[0]));
-    std::memcpy(Data.Indices, Indices.data(), Indices.size() * sizeof(Indices[0]));
+    std::memcmp(Data.Positions, CubePos.data(), CubePos.size() * sizeof(CubePos[0]));
+    std::memcpy(Data.UVs, CubeUV.data(), Indices.size() * sizeof(Indices[0]));
 
     BufferDesc BuffDesc;
-    BuffDesc.Name      = "Cube vertex & index buffer";
+    BuffDesc.Name      = "Cube Vertex and Index Buffer";
     BuffDesc.Usage     = USAGE_IMMUTABLE;
     BuffDesc.BindFlags = BIND_UNIFORM_BUFFER;
     BuffDesc.Size      = sizeof(Data);
 
-    BufferData BufData;
-    BufData.pData    = &Data;
-    BufData.DataSize = sizeof(Data);
+    BufferData BuffData;
+    BuffData.pData    = &Data;
+    BuffData.DataSize = sizeof(Data);
 
-    m_pDevice->CreateBuffer(BuffDesc, &BufData, &m_CubeBuffer);
+    m_pDevice->CreateBuffer(BuffDesc, &BuffData, &m_CubeBuffer);
     VERIFY_EXPR(m_CubeBuffer != nullptr);
 }
 
-void Tutorial20_MeshShader::CreateDrawTasks()
+void MeshShader::CreateDrawTasks()
 {
-    // In this tutorial draw tasks contain:
-    //  * cube position in the grid
-    //  * cube scale factor
-    //  * time that is used for animation and will be updated in the shader.
-    // Additionally you can store model transformation matrix, mesh and material IDs, etc.
-
+    // cube positions in a grid
+    // cube scale factor
+    // time used for animation, updated in the shader
+    // additional store transformation matrix,mesh and material IDs...
     const int2          GridDim{128, 128};
-    FastRandReal<float> Rnd{0, 0.f, 1.f};
+    FastRandReal<float> Rnd{0, 0.f, 1.0f};
 
     std::vector<DrawTask> DrawTasks;
     DrawTasks.resize(static_cast<size_t>(GridDim.x) * static_cast<size_t>(GridDim.y));
-
     for (int y = 0; y < GridDim.y; ++y)
     {
         for (int x = 0; x < GridDim.x; ++x)
         {
-            int   idx = x + y * GridDim.x;
+            int   idx = x + x + y * GridDim.x;
             auto& dst = DrawTasks[idx];
 
-            dst.BasePos.x  = (x - GridDim.x / 2) * 4.f + (Rnd() * 2.f - 1.f);
-            dst.BasePos.y  = (y - GridDim.y / 2) * 4.f + (Rnd() * 2.f - 1.f);
-            dst.Scale      = Rnd() * 0.5f + 0.5f; // 0.5 .. 1
+            dst.BasePos.x  = (x - GridDim.x / 2) * 4.f + (Rnd() * 2.f - 1.0f);
+            dst.BasePos.y  = (y - GridDim.y / 2) * 4.0f + (Rnd() * 2.0f - 1.0f);
+            dst.Scale      = Rnd() * 0.5f + 0.5f;
             dst.TimeOffset = Rnd() * PI_F;
         }
     }
-
     BufferDesc BuffDesc;
-    BuffDesc.Name              = "Draw tasks buffer";
+    BuffDesc.Name              = "Draw Tasks Buffer";
     BuffDesc.Usage             = USAGE_DEFAULT;
     BuffDesc.BindFlags         = BIND_SHADER_RESOURCE;
     BuffDesc.Mode              = BUFFER_MODE_STRUCTURED;
@@ -150,13 +121,10 @@ void Tutorial20_MeshShader::CreateDrawTasks()
     m_DrawTaskCount = static_cast<Uint32>(DrawTasks.size());
 }
 
-void Tutorial20_MeshShader::CreateStatisticsBuffer()
+void MeshShader::CreateStatisticsBuffer()
 {
-    // This buffer is used as an atomic counter in the amplification shader to show
-    // how many cubes are rendered with and without frustum culling.
-
     BufferDesc BuffDesc;
-    BuffDesc.Name      = "Statistics buffer";
+    BuffDesc.Name      = "Statistics Buffer";
     BuffDesc.Usage     = USAGE_DEFAULT;
     BuffDesc.BindFlags = BIND_UNORDERED_ACCESS;
     BuffDesc.Mode      = BUFFER_MODE_RAW;
@@ -165,9 +133,8 @@ void Tutorial20_MeshShader::CreateStatisticsBuffer()
     m_pDevice->CreateBuffer(BuffDesc, nullptr, &m_pStatisticsBuffer);
     VERIFY_EXPR(m_pStatisticsBuffer != nullptr);
 
-    // Staging buffer is needed to read the data from statistics buffer.
-
-    BuffDesc.Name           = "Statistics staging buffer";
+    // Staging buffer reads data from statistics to buffer
+    BuffDesc.Name           = "Statistics Staging Buffer";
     BuffDesc.Usage          = USAGE_STAGING;
     BuffDesc.BindFlags      = BIND_NONE;
     BuffDesc.Mode           = BUFFER_MODE_UNDEFINED;
@@ -181,21 +148,18 @@ void Tutorial20_MeshShader::CreateStatisticsBuffer()
     FDesc.Name = "Statistics available";
     m_pDevice->CreateFence(FDesc, &m_pStatisticsAvailable);
 }
-
-void Tutorial20_MeshShader::CreateConstantsBuffer()
+void MeshShader::CreateConstantsBuffer()
 {
     BufferDesc BuffDesc;
-    BuffDesc.Name           = "Constant buffer";
+    BuffDesc.Name           = "Constant Buffer";
     BuffDesc.Usage          = USAGE_DYNAMIC;
     BuffDesc.BindFlags      = BIND_UNIFORM_BUFFER;
     BuffDesc.CPUAccessFlags = CPU_ACCESS_WRITE;
     BuffDesc.Size           = sizeof(Constants);
-
     m_pDevice->CreateBuffer(BuffDesc, nullptr, &m_pConstants);
     VERIFY_EXPR(m_pConstants != nullptr);
 }
-
-void Tutorial20_MeshShader::LoadTexture()
+void MeshShader::LoadTexture()
 {
     TextureLoadInfo loadInfo;
     loadInfo.IsSRGB = true;
@@ -206,93 +170,72 @@ void Tutorial20_MeshShader::LoadTexture()
     m_CubeTextureSRV = pTex->GetDefaultView(TEXTURE_VIEW_SHADER_RESOURCE);
     VERIFY_EXPR(m_CubeTextureSRV != nullptr);
 }
-
-void Tutorial20_MeshShader::CreatePipelineState()
+void MeshShader::CreatePipelineState()
 {
-    // Pipeline state object encompasses configuration of all GPU stages
-
     GraphicsPipelineStateCreateInfo PSOCreateInfo;
-    PipelineStateDesc&              PSODesc = PSOCreateInfo.PSODesc;
 
-    PSODesc.Name = "Mesh shader";
+    PipelineStateDesc& PSODesc = PSOCreateInfo.PSODesc;
+    PSODesc.Name               = "MeshShader";
+    PSODesc.PipelineType       = PIPELINE_TYPE_GRAPHICS;
 
-    PSODesc.PipelineType                                                = PIPELINE_TYPE_MESH;
     PSOCreateInfo.GraphicsPipeline.NumRenderTargets                     = 1;
     PSOCreateInfo.GraphicsPipeline.RTVFormats[0]                        = m_pSwapChain->GetDesc().ColorBufferFormat;
     PSOCreateInfo.GraphicsPipeline.DSVFormat                            = m_pSwapChain->GetDesc().DepthBufferFormat;
     PSOCreateInfo.GraphicsPipeline.RasterizerDesc.CullMode              = CULL_MODE_BACK;
     PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FillMode              = FILL_MODE_SOLID;
-    PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FrontCounterClockwise = False;
-    PSOCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable         = True;
+    PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FrontCounterClockwise = false;
+    PSOCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable         = true;
+    PSOCreateInfo.GraphicsPipeline.PrimitiveTopology                    = PRIMITIVE_TOPOLOGY_UNDEFINED;
 
-    // Topology is defined in the mesh shader, this value is not used.
-    PSOCreateInfo.GraphicsPipeline.PrimitiveTopology = PRIMITIVE_TOPOLOGY_UNDEFINED;
-
-    // Define variable type that will be used by default.
     PSODesc.ResourceLayout.DefaultVariableType = SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE;
 
     ShaderCreateInfo ShaderCI;
-    ShaderCI.SourceLanguage = SHADER_SOURCE_LANGUAGE_HLSL;
-
-    // For Direct3D12 we must use the new DXIL compiler that supports mesh shaders.
-    ShaderCI.ShaderCompiler = SHADER_COMPILER_DXC;
-
+    ShaderCI.SourceLanguage                  = SHADER_SOURCE_LANGUAGE_HLSL;
+    ShaderCI.ShaderCompiler                  = SHADER_COMPILER_DXC;
     ShaderCI.Desc.UseCombinedTextureSamplers = true;
 
-    // Create a shader source stream factory to load shaders from files.
-    RefCntAutoPtr<IShaderSourceInputStreamFactory> pShaderSourceFactory;
-    m_pEngineFactory->CreateDefaultShaderSourceStreamFactory(nullptr, &pShaderSourceFactory);
-    ShaderCI.pShaderSourceStreamFactory = pShaderSourceFactory;
+    RefCntAutoPtr<IShaderSourceInputStreamFactory> sf;
+    m_pEngineFactory->CreateDefaultShaderSourceStreamFactory(nullptr, &sf);
+    ShaderCI.pShaderSourceStreamFactory = sf;
 
     ShaderMacroHelper Macros;
     Macros.AddShaderMacro("GROUP_SIZE", ASGroupSize);
-
     ShaderCI.Macros = Macros;
 
     RefCntAutoPtr<IShader> pAS;
     {
+        ShaderCI.Desc.Name       = "Amplification Shader";
         ShaderCI.Desc.ShaderType = SHADER_TYPE_AMPLIFICATION;
         ShaderCI.EntryPoint      = "main";
-        ShaderCI.Desc.Name       = "Mesh shader - AS";
         ShaderCI.FilePath        = "cube.ash";
-
         m_pDevice->CreateShader(ShaderCI, &pAS);
         VERIFY_EXPR(pAS != nullptr);
     }
-
     RefCntAutoPtr<IShader> pMS;
     {
+        ShaderCI.Desc.Name       = "Mesh Shader";
         ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
         ShaderCI.EntryPoint      = "main";
-        ShaderCI.Desc.Name       = "Mesh shader - MS";
         ShaderCI.FilePath        = "cube.msh";
-
         m_pDevice->CreateShader(ShaderCI, &pMS);
         VERIFY_EXPR(pMS != nullptr);
     }
-
     RefCntAutoPtr<IShader> pPS;
     {
+        ShaderCI.Desc.Name       = "Pixel Shader";
         ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
         ShaderCI.EntryPoint      = "main";
-        ShaderCI.Desc.Name       = "Mesh shader - PS";
         ShaderCI.FilePath        = "cube.psh";
-
         m_pDevice->CreateShader(ShaderCI, &pPS);
         VERIFY_EXPR(pPS != nullptr);
     }
 
-    // clang-format off
-    // Define immutable sampler for g_Texture. Immutable samplers should be used whenever possible
-    SamplerDesc SamLinearClampDesc
-    {
-        FILTER_TYPE_LINEAR, FILTER_TYPE_LINEAR, FILTER_TYPE_LINEAR, 
-        TEXTURE_ADDRESS_CLAMP, TEXTURE_ADDRESS_CLAMP, TEXTURE_ADDRESS_CLAMP
-    };
-    ImmutableSamplerDesc ImtblSamplers[] = 
-    {
-        {SHADER_TYPE_PIXEL, "g_Texture", SamLinearClampDesc}
-    };
+    SamplerDesc SamLinearClampDesc{
+        FILTER_TYPE_LINEAR, FILTER_TYPE_LINEAR, FILTER_TYPE_LINEAR,
+        TEXTURE_ADDRESS_CLAMP, TEXTURE_ADDRESS_CLAMP, TEXTURE_ADDRESS_CLAMP};
+    ImmutableSamplerDesc ImtblSamplers[] =
+        {
+            {SHADER_TYPE_PIXEL, "g_Texture", SamLinearClampDesc}};
     // clang-format on
     PSODesc.ResourceLayout.ImmutableSamplers    = ImtblSamplers;
     PSODesc.ResourceLayout.NumImmutableSamplers = _countof(ImtblSamplers);
@@ -307,6 +250,7 @@ void Tutorial20_MeshShader::CreatePipelineState()
     m_pPSO->CreateShaderResourceBinding(&m_pSRB, true);
     VERIFY_EXPR(m_pSRB != nullptr);
 
+
     m_pSRB->GetVariableByName(SHADER_TYPE_AMPLIFICATION, "Statistics")->Set(m_pStatisticsBuffer->GetDefaultView(BUFFER_VIEW_UNORDERED_ACCESS));
     m_pSRB->GetVariableByName(SHADER_TYPE_AMPLIFICATION, "DrawTasks")->Set(m_pDrawTasks->GetDefaultView(BUFFER_VIEW_SHADER_RESOURCE));
     m_pSRB->GetVariableByName(SHADER_TYPE_AMPLIFICATION, "cbCubeData")->Set(m_CubeBuffer);
@@ -316,7 +260,7 @@ void Tutorial20_MeshShader::CreatePipelineState()
     m_pSRB->GetVariableByName(SHADER_TYPE_PIXEL, "g_Texture")->Set(m_CubeTextureSRV);
 }
 
-void Tutorial20_MeshShader::UpdateUI()
+void MeshShader::UpdateUI()
 {
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
     if (ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
@@ -329,15 +273,13 @@ void Tutorial20_MeshShader::UpdateUI()
     }
     ImGui::End();
 }
-
-void Tutorial20_MeshShader::ModifyEngineInitInfo(const ModifyEngineInitInfoAttribs& Attribs)
+void MeshShader::ModifyEngineInitInfo(const ModifyEngineInitInfoAttribs& Attribs)
 {
     SampleBase::ModifyEngineInitInfo(Attribs);
 
     Attribs.EngineCI.Features.MeshShaders = DEVICE_FEATURE_STATE_ENABLED;
 }
-
-void Tutorial20_MeshShader::Initialize(const SampleInitInfo& InitInfo)
+void MeshShader::Initialize(const SampleInitInfo& InitInfo)
 {
     SampleBase::Initialize(InitInfo);
 
@@ -348,9 +290,7 @@ void Tutorial20_MeshShader::Initialize(const SampleInitInfo& InitInfo)
     CreateConstantsBuffer();
     CreatePipelineState();
 }
-
-// Render a frame
-void Tutorial20_MeshShader::Render()
+void MeshShader::Render()
 {
     auto* pRTV = m_pSwapChain->GetCurrentBackBufferRTV();
     auto* pDSV = m_pSwapChain->GetDepthBufferDSV();
@@ -434,7 +374,7 @@ void Tutorial20_MeshShader::Render()
     }
 }
 
-void Tutorial20_MeshShader::Update(double CurrTime, double ElapsedTime)
+void MeshShader::Update(double CurrTime, double ElapsedTime)
 {
     SampleBase::Update(CurrTime, ElapsedTime);
     UpdateUI();
