@@ -14,6 +14,8 @@ set(INCLUDE
 )
 
 set(SHADERS
+	assets/VS.vsh
+    	assets/PS.psh
     
 )
 
