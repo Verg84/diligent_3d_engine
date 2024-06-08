@@ -4,6 +4,8 @@ namespace Diligent
 {
 	class MObject final :public SampleBase
 	{
+    public:
+
         virtual void Initialize(const SampleInitInfo& InitInfo)override final;
         virtual void Update(double ctime, double etime)override final;
         virtual void Render() override final;
@@ -12,5 +14,8 @@ namespace Diligent
             return "MObject Project";
         }
 
+    private:
+        RefCntAutoPtr<IPipelineState> m_pPSO;
 	};
+
 }
