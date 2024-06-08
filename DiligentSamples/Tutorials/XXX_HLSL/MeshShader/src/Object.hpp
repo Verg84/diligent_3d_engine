@@ -168,11 +168,10 @@ namespace Diligent
                 CreateInfo.pDevice->CreateShader(ShaderCI, &pPS);
             }
 
-            InputLayoutDescX InputLayout;
+            LayoutElement elems[] =
+                {
+                    LayoutElement{0, 0, 3, VT_FLOAT32, False}};
 
-            Uint32 Attrib = 0;
-            if (CreateInfo.Components & VERTEX_COMPONENT_FLAG_POSITION)
-                InputLayout.Add(Attrib++, 0u, 3u, VT_FLOAT32, False);
 
             RefCntAutoPtr<IPipelineState> pPSO;
             CreateInfo.pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &pPSO);

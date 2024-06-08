@@ -19,6 +19,8 @@ namespace Diligent
 
         RefCntAutoPtr<IBuffer> m_VertexBuffer;
         RefCntAutoPtr<IBuffer> m_IndexBuffer;
+        
+        void CreatePipeline();
 	};
 
 }
