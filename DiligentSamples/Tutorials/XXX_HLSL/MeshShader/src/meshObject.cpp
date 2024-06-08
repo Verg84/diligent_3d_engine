@@ -23,6 +23,9 @@ namespace Diligent
         PSOInfo.VSFilePath           = "VS.vsh";
         PSOInfo.PSFilePath           = "PS.psh";
         m_pPSO                       = Object::CreatePipelineState(PSOInfo);
+        VERIFY_EXPR(m_pPSO != nullptr);
+        m_VertexBuffer               = Object::CreateVertexBuffer(m_pDevice, Object::VERTEX_COMPONENT_FLAG_POSITION);
+        m_IndexBuffer                = Object::CreateIndexBuffer(m_pDevice);
 
 			
 

@@ -16,6 +16,9 @@ namespace Diligent
 
     private:
         RefCntAutoPtr<IPipelineState> m_pPSO;
+
+        RefCntAutoPtr<IBuffer> m_VertexBuffer;
+        RefCntAutoPtr<IBuffer> m_IndexBuffer;
 	};
 
 }
