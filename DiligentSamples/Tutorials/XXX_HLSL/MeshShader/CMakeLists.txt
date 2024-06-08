@@ -16,6 +16,9 @@ set(INCLUDE
 set(SHADERS
 	assets/VS.vsh
     	assets/PS.psh
+	assets/mesh_shader.msh
+	assets/amp_shader.ash
+	assets/structures.fxh
     
 )
 

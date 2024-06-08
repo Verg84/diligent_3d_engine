@@ -99,7 +99,7 @@ namespace Diligent
 
         DrawIndexedAttribs DrawAttrs;     // This is an indexed draw call
         DrawAttrs.IndexType  = VT_UINT32; // Index type
-        DrawAttrs.NumIndices = 3;
+        DrawAttrs.NumIndices = 36;
         // Verify the state of vertex and index buffers
         DrawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
         m_pImmediateContext->DrawIndexed(DrawAttrs);
