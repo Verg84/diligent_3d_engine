@@ -1,4 +1,4 @@
-/*
+c/*
  *  Copyright 2019-2022 Diligent Graphics LLC
  *  Copyright 2015-2019 Egor Yusov
  *

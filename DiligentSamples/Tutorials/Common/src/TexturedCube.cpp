@@ -250,16 +250,7 @@ RefCntAutoPtr<IPipelineState> CreatePipelineState(const CreatePSOInfo& CreateInf
     if (CreateInfo.Components & VERTEX_COMPONENT_FLAG_TEXCOORD)
         InputLayout.Add(Attrib++, 0u, 2u, VT_FLOAT32, False);
 
-    for (Uint32 i = 0; i < CreateInfo.NumExtraLayoutElements; ++i)
-        InputLayout.Add(CreateInfo.ExtraLayoutElements[i]);
 
-    GraphicsPipeline.InputLayout = InputLayout;
-
-    PSOCreateInfo.pVS = pVS;
-    PSOCreateInfo.pPS = pPS;
-
-    // Define variable type that will be used by default
-    ResourceLayout.DefaultVariableType = SHADER_RESOURCE_VARIABLE_TYPE_STATIC;
 
     // Shader variables should typically be mutable, which means they are expected
     // to change on a per-instance basis

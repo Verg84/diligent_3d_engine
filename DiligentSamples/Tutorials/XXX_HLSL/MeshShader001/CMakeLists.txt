@@ -9,6 +9,7 @@ set(SOURCE
 
 set(INCLUDE
     src/meshObject.hpp
+	src/Object.hpp
     
 )
 
