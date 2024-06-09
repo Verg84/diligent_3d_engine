@@ -1,11 +1,13 @@
-layout(location=0) out vec4 FragColor;
+#version 450
 
-in PerVertexData
+layout (location = 0) in PerVertexData
 {
-	vec4 color;
-}fragIn;
+  vec4 color;
+} fragIn;
+
+layout (location = 0) out vec4 FragColor;
 
 void main()
 {
-	FragColor=fragIn.color;
+  FragColor = fragIn.color;
 }
