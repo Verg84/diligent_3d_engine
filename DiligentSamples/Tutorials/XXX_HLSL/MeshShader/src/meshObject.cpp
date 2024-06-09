@@ -7,6 +7,56 @@ namespace Diligent
 	{
         return new MObject();
 	}
+    void MObject::CreateMeshShaderPipeline()
+    {
+        GraphicsPipelineStateCreateInfo PSOCreateInfo;
+        PSOCreateInfo.PSODesc.Name = "PIPLEINE MESH SHADER";
+        PSOCreateInfo.PSODesc.PipelineType = PIPELINE_TYPE_MESH;
+
+        PSOCreateInfo.GraphicsPipeline.NumRenderTargets = 0;
+        PSOCreateInfo.GraphicsPipeline.RTVFormats[0]    = m_pSwapChain->GetDesc().ColorBufferFormat;
+        PSOCreateInfo.GraphicsPipeline.DSVFormat        = m_pSwapChain->GetDesc().DepthBufferFormat;
+
+        PSOCreateInfo.GraphicsPipeline.RasterizerDesc.CullMode = CULL_MODE_NONE;
+        PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FillMode = FILL_MODE_SOLID;
+        PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FrontCounterClockwise = False;
+        PSOCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable = False;
+        PSOCreateInfo.GraphicsPipeline.PrimitiveTopology=PRIMITIVE_TOPOLOGY_UNDEFINED;
+        
+        ShaderCreateInfo ShaderCI;
+        ShaderCI.SourceLanguage = SHADER_SOURCE_LANGUAGE_GLSL;
+
+        RefCntAutoPtr<IShaderSourceInputStreamFactory> sf;
+        m_pEngineFactory->CreateDefaultShaderSourceStreamFactory(nullptr, &sf);
+        ShaderCI.pShaderSourceStreamFactory = sf;
+
+        RefCntAutoPtr<IShader> MS;
+        {
+            ShaderCI.Desc.Name = "Mesh Shader";
+            ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
+            ShaderCI.EntryPoint      = "main";
+            ShaderCI.FilePath        = "MS.glsl";
+            m_pDevice->CreateShader(ShaderCI, &MS);
+            VERIFY_EXPR(MS != nullptr);
+        }
+
+        RefCntAutoPtr<IShader> PS;
+        {
+            ShaderCI.Desc.Name = "Pixel Shader";
+            ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
+            ShaderCI.EntryPoint      = "main";
+            ShaderCI.FilePath        = "PS.glsl";
+            m_pDevice->CreateShader(ShaderCI, &PS);
+            VERIFY_EXPR(PS != nullptr);
+        }
+
+        PSOCreateInfo.pMS = MS;
+        PSOCreateInfo.pPS = PS;
+
+        m_pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &m_pPSO);
+        VERIFY_EXPR(m_pPSO != nullptr);
+
+    }
 	void MObject::CreatePipeline()
 	{
         GraphicsPipelineStateCreateInfo PSOCreateInfo;
@@ -61,8 +111,7 @@ namespace Diligent
 	void MObject::Initialize(const SampleInitInfo& InitInfo)
 	{
         SampleBase::Initialize(InitInfo);
-        CreatePipeline();
-        VERIFY_EXPR(m_pPSO != nullptr);
+        CreateMeshShaderPipeline();
 
         
 		
@@ -86,23 +135,17 @@ namespace Diligent
 
       
 
-        // Bind vertex and index buffers
-        const Uint64 offset   = 0;
-        IBuffer*     pBuffs[] = {m_VertexBuffer};
-        m_pImmediateContext->SetVertexBuffers(0, 1, pBuffs, &offset, RESOURCE_STATE_TRANSITION_MODE_TRANSITION, SET_VERTEX_BUFFERS_FLAG_RESET);
-        m_pImmediateContext->SetIndexBuffer(m_IndexBuffer, 0, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
-
+       
         // Set the pipeline state
         m_pImmediateContext->SetPipelineState(m_pPSO);
         // Commit shader resources. RESOURCE_STATE_TRANSITION_MODE_TRANSITION mode
         // makes sure that resources are transitioned to required states.
 
-        DrawIndexedAttribs DrawAttrs;     // This is an indexed draw call
-        DrawAttrs.IndexType  = VT_UINT32; // Index type
-        DrawAttrs.NumIndices = 36;
+        DrawAttribs DrawAttrs;     // This is an indexed draw call
+        DrawAttrs.NumVertices = 3;
         // Verify the state of vertex and index buffers
         DrawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
-        m_pImmediateContext->DrawIndexed(DrawAttrs);
+        m_pImmediateContext->Draw(DrawAttrs);
 	}
 	void MObject::Update(double ctime, double etime)
 	{

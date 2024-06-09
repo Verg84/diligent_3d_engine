@@ -21,6 +21,7 @@ namespace Diligent
         RefCntAutoPtr<IBuffer> m_IndexBuffer;
         
         void CreatePipeline();
+        void CreateMeshShaderPipeline();
 	};
 
 }
