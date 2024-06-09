@@ -45,7 +45,7 @@ namespace Diligent
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "PS.glsl";
+            ShaderCI.FilePath        = "PS.frag";
             m_pDevice->CreateShader(ShaderCI, &PS);
             VERIFY_EXPR(PS != nullptr);
         }
