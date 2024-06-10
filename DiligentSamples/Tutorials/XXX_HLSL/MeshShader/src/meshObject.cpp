@@ -29,25 +29,26 @@ namespace Diligent
         RefCntAutoPtr<IShaderSourceInputStreamFactory> sf;
         m_pEngineFactory->CreateDefaultShaderSourceStreamFactory(nullptr, &sf);
         ShaderCI.pShaderSourceStreamFactory = sf;
+        ShaderCI.ShaderCompiler             = SHADER_COMPILER_DXC;
 
         RefCntAutoPtr<IShader> MS;
         {
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
-            ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "lettersMS.glsl";
+            ShaderCI.EntryPoint      = "MSMain";
+            ShaderCI.FilePath        = "lettersMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
-            VERIFY_EXPR(MS != nullptr);
+            
         }
 
         RefCntAutoPtr<IShader> PS;
         {
             ShaderCI.Desc.Name = "lettersPixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
-            ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "PS.frag";
+            ShaderCI.EntryPoint      = "PSMain";
+            ShaderCI.FilePath        = "lettersPS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
-            VERIFY_EXPR(PS != nullptr);
+           
         }
 
         PSOCreateInfo.pMS = MS;
@@ -74,6 +75,8 @@ namespace Diligent
 		ShaderCreateInfo ShaderCI;
         ShaderCI.SourceLanguage = SHADER_SOURCE_LANGUAGE_HLSL;
         ShaderCI.Desc.UseCombinedTextureSamplers = true;
+        ShaderCI.ShaderCompiler                  = SHADER_COMPILER_DXC;
+
 
 		RefCntAutoPtr<IShaderSourceInputStreamFactory> sf;
         m_pEngineFactory->CreateDefaultShaderSourceStreamFactory(nullptr,&sf);
@@ -141,11 +144,12 @@ namespace Diligent
         // Commit shader resources. RESOURCE_STATE_TRANSITION_MODE_TRANSITION mode
         // makes sure that resources are transitioned to required states.
 
-        DrawAttribs DrawAttrs;     // This is an indexed draw call
-        DrawAttrs.NumVertices = 3;
+        DrawMeshAttribs drawAttrs; // This is an indexed draw call
+        drawAttrs.ThreadGroupCount = 1;
+        drawAttrs.Flags            = DRAW_FLAG_VERIFY_ALL;
         // Verify the state of vertex and index buffers
-        DrawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
-        m_pImmediateContext->Draw(DrawAttrs);
+        drawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
+        m_pImmediateContext->DrawMesh(drawAttrs);
 	}
 	void MObject::Update(double ctime, double etime)
 	{
