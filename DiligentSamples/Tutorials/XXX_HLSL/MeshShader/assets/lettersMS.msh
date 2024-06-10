@@ -1,0 +1,91 @@
+static const uint SOLID = 0;
+static const uint CONVEX = 1;
+static const uint CONCAVE = 2;
+
+static const float2 pos[] =
+{
+    { +0.000, -1.00 }, // 0
+    { +0.150, -0.50 }, // 1
+    { +0.150, +0.00 }, // 2
+    { +0.150, +0.50 }, // 3
+    { +0.000, +1.00 }, // 4
+    { -0.300, +1.00 }, // 5
+    { -0.165, +0.50 }, // 6
+    { -0.165, +0.00 }, // 7
+    { -0.165, -0.50 }, // 8
+    { -0.300, -1.00 }, // 9
+        
+};
+
+static const uint3 tri[] =
+{
+    // CONVEX curve triangles
+    { 0, 1, 2 }, // 0    
+    { 2, 3, 4 }, // 1
+    // CONCAVE curve triangles
+    { 5, 6, 7 }, // 2
+    { 7, 8, 9 }, // 3
+    // Filled Triangles
+    { 4, 5, 6 }, // 4
+    { 4, 6, 2 }, // 5
+    { 6, 7, 2 }, // 6
+    { 7, 8, 2 }, // 7
+    { 2, 8, 0 }, // 8
+    { 9, 0, 8 }, // 9        
+};
+
+
+static uint primAttr[] =
+{
+    CONVEX,  //0 
+    CONVEX,  // 1
+    CONCAVE, // 2
+    CONCAVE, // 3
+    SOLID,   // 4    
+    SOLID,   // 5    
+    SOLID,   // 6    
+    SOLID,   // 7
+    SOLID,   // 8
+    SOLID,   // 9
+};
+
+struct VertOut
+{
+    float4 position     : SV_POSITION;
+};
+
+struct PrimOut
+{
+    uint triangleType   : BLENDINDICES0;
+};
+
+struct PixelIn
+{
+    float4 position    : SV_POSITION;
+    sample float3 bary : SV_BARYCENTRICS;
+    uint triangleType  : BLENDINDICES0;
+};
+
+[NumThreads(128, 1, 1)]
+[OutputTopology("triangle")]
+void MSMain(
+    uint tid : SV_GroupThreadID,    
+    out indices uint3 outputTriangles[128],
+    out vertices VertOut outputVertices[64],
+    out primitives PrimOut outputPrimAttr[128])
+{    
+    const uint nVerts = sizeof(pos) / sizeof(float2);
+    const uint nPrims = sizeof(tri) / sizeof(uint3);
+    
+    SetMeshOutputCounts(nVerts, nPrims);
+    
+    if (tid < nPrims)
+    {
+        outputTriangles[tid] = tri[tid];
+        outputPrimAttr[tid].triangleType = primAttr[tid];
+    }
+    if (tid < nVerts)
+    {
+        outputVertices[tid].position = float4(0.9 * pos[tid].xy, 0.0f, 1.0f);
+    }
+}

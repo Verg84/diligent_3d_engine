@@ -1,0 +1,25 @@
+float2 computeUV(const float3 bary)
+{
+    const float u = bary.x * 0 + bary.y * 0.5f + bary.z * 1;
+    const float v = bary.x * 0 + bary.y * 0.0f + bary.z * 1;
+    return float2(u, v);
+}
+
+float computeQuadraticBezierFunction(const float2 uv)
+{
+    return uv.x * uv.x - uv.y;
+}
+
+float4 PSMain(PixelIn p) : SV_TARGET
+{
+    const uint t = p.triangleType;
+    const float2 uv = computeUV(p.bary);
+    const float y = computeQuadraticBezierFunction(uv);
+        
+    if (((t == CONVEX) && (y > 0.0f)) || ((t == CONCAVE) && (y < 0.0f)))
+    {
+        discard;
+    }
+
+    return float3(1, 0, 0, 1);
+}

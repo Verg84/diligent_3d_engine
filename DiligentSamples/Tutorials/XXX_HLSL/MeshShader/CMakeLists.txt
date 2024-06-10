@@ -17,7 +17,9 @@ set(SHADERS
 	assets/VS.vsh
     	assets/PS.psh
 	assets/MS.glsl
-	assets/PS.glsl
+	assets/PS.frag
+	assets/lettersPS.psh
+	assets/lettersMS.msh
     
 )
 

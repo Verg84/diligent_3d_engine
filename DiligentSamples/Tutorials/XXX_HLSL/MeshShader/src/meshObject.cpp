@@ -35,14 +35,14 @@ namespace Diligent
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "MS.glsl";
+            ShaderCI.FilePath        = "lettersMS.glsl";
             m_pDevice->CreateShader(ShaderCI, &MS);
             VERIFY_EXPR(MS != nullptr);
         }
 
         RefCntAutoPtr<IShader> PS;
         {
-            ShaderCI.Desc.Name = "Pixel Shader";
+            ShaderCI.Desc.Name = "lettersPixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "main";
             ShaderCI.FilePath        = "PS.frag";
