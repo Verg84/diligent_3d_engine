@@ -1,0 +1,45 @@
+static const float2 pos[]=
+{
+	{-1.00,0.00},
+	{1.00,0.00},
+	{0.0,1.0}
+};
+
+static const uint3 tri[]=
+{
+	{0,1,2}
+};
+
+struct VertOut
+{
+	float2 position:SV_POSITION;
+}
+
+struct PixelIn
+{
+	float4 position:SV_POSITION;
+};
+
+[NumThreads(128,1,1)]
+[OutputTopology("triangle")]
+void MSMain(
+	uint tid:SV_GroupThreadID,
+	out indices uint3 outputTriangles[128],
+	out vertices VertOut outputVertices[64])
+{
+	const uint numVertices=sizeof(pos)/sizeof(float2);
+	const uint numPrims=sizeof(tri/sizeof(uint3));
+
+	SetMeshOuputCounts(numVerts,numPrims);
+	
+	if(tid<numVerts)
+	{
+		outputVertices[tid].position=float4(0.9*pos[tid].xy,0.0f,1.0f);	
+	}
+	if(tid<numPrims)
+	{	
+		outputTriangles[tid]=tri[tid];
+	}
+}
+
+

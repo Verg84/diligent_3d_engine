@@ -19,7 +19,7 @@ namespace Diligent
 
         PSOCreateInfo.GraphicsPipeline.RasterizerDesc.CullMode = CULL_MODE_NONE;
         PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FillMode = FILL_MODE_SOLID;
-        PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FrontCounterClockwise = False;
+       // PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FrontCounterClockwise = False;
         PSOCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable = False;
         PSOCreateInfo.GraphicsPipeline.PrimitiveTopology=PRIMITIVE_TOPOLOGY_UNDEFINED;
         
@@ -36,17 +36,17 @@ namespace Diligent
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
             ShaderCI.EntryPoint      = "MSMain";
-            ShaderCI.FilePath        = "lettersMS.msh";
+            ShaderCI.FilePath        = "simpleMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
 
         RefCntAutoPtr<IShader> PS;
         {
-            ShaderCI.Desc.Name = "lettersPixel Shader";
+            ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "PSMain";
-            ShaderCI.FilePath        = "lettersPS.psh";
+            ShaderCI.FilePath        = "simplePS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }

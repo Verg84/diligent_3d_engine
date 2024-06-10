@@ -14,12 +14,10 @@ set(INCLUDE
 )
 
 set(SHADERS
-	assets/VS.vsh
-    	assets/PS.psh
-	assets/MS.glsl
-	assets/PS.frag
 	assets/lettersPS.psh
 	assets/lettersMS.msh
+	assets/simpleMS.msh
+	assets/simplePS.psh
     
 )
 
