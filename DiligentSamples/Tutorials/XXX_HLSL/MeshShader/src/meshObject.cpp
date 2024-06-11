@@ -31,21 +31,14 @@ namespace Diligent
         ShaderCI.pShaderSourceStreamFactory = sf;
         ShaderCI.ShaderCompiler             = SHADER_COMPILER_DXC;
         
-        RefCntAutoPtr<IShader> TS;
-        {
-            ShaderCI.Desc.Name       = "Task Shader";
-            ShaderCI.Desc.ShaderType = SHADER_TYPE_AMPLIFICATION;
-            ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "meshshader.task";
-            m_pDevice->CreateShader(ShaderCI, &TS);
-        }
+        
 
         RefCntAutoPtr<IShader> MS;
         {
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
-            ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "meshshader.mesh";
+            ShaderCI.EntryPoint      = "MSMain";
+            ShaderCI.FilePath        = "pass_throughMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
@@ -55,11 +48,10 @@ namespace Diligent
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "PSMain";
-            ShaderCI.FilePath        = "meshshader.frag";
+            ShaderCI.FilePath        = "pass_throughPS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }
-        PSOCreateInfo.pAS = TS;
         PSOCreateInfo.pMS = MS;
         PSOCreateInfo.pPS = PS;
 
