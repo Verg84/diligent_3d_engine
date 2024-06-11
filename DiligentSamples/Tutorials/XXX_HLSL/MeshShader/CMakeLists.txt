@@ -18,6 +18,9 @@ set(SHADERS
 	assets/lettersMS.msh
 	assets/simpleMS.msh
 	assets/simplePS.psh
+	assets/meshshader.mesh
+	assets/meshshader.frag
+	assets/meshshader.task
     
 )
 
