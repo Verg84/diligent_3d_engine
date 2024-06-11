@@ -1,45 +1,26 @@
-static const float2 pos[]=
-{
-	{-1.00,0.00},
-	{1.00,0.00},
-	{0.0,1.0}
-};
 
-static const uint3 tri[]=
-{
-	{0,1,2}
-};
-
-struct VertOut
-{
-	float2 position:SV_POSITION;
-}
-
-struct PixelIn
+struct MeshOutput
 {
 	float4 position:SV_POSITION;
+	float3 color:COLOR0;
 };
 
-[NumThreads(128,1,1)]
-[OutputTopology("triangle")]
+[outputtopology("triangle")]
+[numthreads(1,1,1)]
 void MSMain(
-	uint tid:SV_GroupThreadID,
-	out indices uint3 outputTriangles[128],
-	out vertices VertOut outputVertices[64])
+	out indices uint3 triangles[1],
+	out vertices MeshOutput vertices[3])
 {
-	const uint numVertices=sizeof(pos)/sizeof(float2);
-	const uint numPrims=sizeof(tri/sizeof(uint3));
+	SetMeshOutputCounts(3,1);
 
-	SetMeshOuputCounts(numVerts,numPrims);
+	triangles[0]=uint3(0,1,2);
+
+	vertices[0].position=float4(-0.5,0.5,0.0,1.0);
+	vertices[0].color=float3(1.0,0.0,0.0);
 	
-	if(tid<numVerts)
-	{
-		outputVertices[tid].position=float4(0.9*pos[tid].xy,0.0f,1.0f);	
-	}
-	if(tid<numPrims)
-	{	
-		outputTriangles[tid]=tri[tid];
-	}
+	vertices[1].position=float4(0.5,0.5,0.0,1.0);
+	vertices[1].color=float3(0.0,1.0,0.0);
+
+	vertices[2].position=float4(0.0,-0.5,0.0,1.0);
+	vertices[2].color=float3(0.0,0.0,1.0);
 }
-
-

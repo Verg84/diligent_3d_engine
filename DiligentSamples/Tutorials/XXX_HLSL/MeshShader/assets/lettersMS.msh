@@ -13,7 +13,7 @@ static const float2 pos[]=
 	{-0.165,0.50},	// 6
 	{-0.165,0.50},	// 7
 	{-0.165,-0.50},	// 8
-	{-0.300,-1.00},	// 9
+	{-0.300,-1.00}	// 9
 };
 
 static const uint3 tri[]=
@@ -70,7 +70,7 @@ void MSMain(
 	uint tid:SV_GroupThreadID,
 	out indices uint3 outputTriangles[128],
 	out vertices VertOut outputVertices[64],
-	out primitives Primout outPrimAttr[128])
+	out primitives PrimOut outputPrimAttr[128])
 {
 	const uint nVerts=sizeof(pos)/sizeof(float2);
 	const uint nPrims=sizeof(tri)/sizeof(uint3);
@@ -80,11 +80,11 @@ void MSMain(
 	if(tid<nPrims)
 	{
 		outputTriangles[tid]=tri[tid];
-		outputPrimAttr[tid].triagleType=primAttr[tid];
+		outputPrimAttr[tid].triangleType=primAttr[tid];
 	}
 	if(tid<nVerts)
 	{
-		outputVertices[tid].position=float4(0.9*pos[tid].xyz,0.0,1.0);
+		outputVertices[tid].position=float4(0.9*pos[tid].xy,0.0,1.0);
 	}
 }
 		

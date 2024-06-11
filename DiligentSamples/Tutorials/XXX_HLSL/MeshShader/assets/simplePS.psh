@@ -1,11 +1,12 @@
-struct PixelIn
+struct MeshOutput
 {
     float4 position : SV_POSITION;
+    float3 color : COLOR0;
 };
 
-float4 PSMain(PixelIn p) :
+float4 PSMain(MeshOutput p) :
     SV_TARGET
 {
-    return float4(0.0, 0.0, 1.0,1.0);
+    return float4(p.color,1.0);
 
 }
