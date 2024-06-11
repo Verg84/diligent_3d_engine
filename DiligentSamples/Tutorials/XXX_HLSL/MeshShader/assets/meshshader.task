@@ -1,0 +1,12 @@
+struct DummyPayload
+{
+	uint dummyData;
+};
+
+groupshared DummyPayload dummyPayLoad;
+
+[numthreads(1,1,1)]
+void main()
+{
+	DispatchMesh(3,1,1,dummyPayLoad);
+}
