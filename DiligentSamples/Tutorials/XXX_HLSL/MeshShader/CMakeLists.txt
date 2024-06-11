@@ -20,6 +20,8 @@ set(SHADERS
 	assets/simplePS.psh
 	assets/pass_throughMS.msh
 	assets/pass_throughPS.psh
+	assets/tidMS.msh
+	assets/tidPS.psh
     
 )
 

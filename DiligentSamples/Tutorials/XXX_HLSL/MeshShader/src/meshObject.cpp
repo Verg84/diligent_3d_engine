@@ -37,8 +37,8 @@ namespace Diligent
         {
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
-            ShaderCI.EntryPoint      = "MSMain";
-            ShaderCI.FilePath        = "pass_throughMS.msh";
+            ShaderCI.EntryPoint      = "main";
+            ShaderCI.FilePath        = "tidMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
@@ -48,7 +48,7 @@ namespace Diligent
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "PSMain";
-            ShaderCI.FilePath        = "pass_throughPS.psh";
+            ShaderCI.FilePath        = "tidPS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }
