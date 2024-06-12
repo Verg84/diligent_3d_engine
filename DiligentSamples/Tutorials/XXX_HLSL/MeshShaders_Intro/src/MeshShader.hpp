@@ -13,5 +13,10 @@ namespace Diligent
             return "Mesh Shader Introduction";
         }
 
+    private:
+        RefCntAutoPtr<IPipelineState> m_pPSO;
+
+        void CreateMeshPipeline();
+
 	};
 }

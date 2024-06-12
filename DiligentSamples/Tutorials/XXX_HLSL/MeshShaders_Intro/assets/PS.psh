@@ -1,0 +1,10 @@
+struct MSOutput
+{
+    float4 positions : SV_POSITION;
+    float4 color : COLOR0;
+};
+
+float4 PSMain(MSOutput p):SV_TARGET
+{
+    return p.color;
+}

@@ -1,0 +1,45 @@
+struct MSOut
+{
+	float4 position:SV_POSITION;
+	float4 color:COLOR0;
+};
+
+static const float4 positions[3]=
+{
+	float4(-0.5,0.0,0.0,1.0),
+	float4(0.5,0.0,0.0,1.0),
+	float4(0.0,-0.5,0.0,1.0)
+};
+
+static const float4 colors[3]=
+{
+	float4(1.0,0.0,0.0,1.0),
+	float4(0.0,1.0,0.0,1.0),
+	float4(0.0,0.0,1.0,1.0)
+};
+
+static const uint idx[3]=
+{
+	0,1,2
+};
+
+[outputtopology("triangle")]
+[numthreads(3,1,1)]
+void main(
+	out indices uint3 output_triangles[1],
+	out vertices MSOut output_vertices[3])
+{
+	const uint numVertices=sizeof(positions)/sizeof(float4);
+	const uint numPrimitives=sizeof(idx)/sizeof(uint);
+	SetMeshOutputCounts(numVertices,numPrimitives);
+
+	output_vertices[0].position=positions[0];
+	output_vertices[1].position=positions[1];
+	output_vertices[2].position=positions[2];
+
+	output_vertices[0].color=colors[0];
+	output_vertices[1].color=colors[1];
+	output_vertices[2].color=colors[2];
+
+	output_triangles[0]=uint3(0,1,2);
+}
