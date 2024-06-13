@@ -1,12 +1,52 @@
 #include"meshObject.hpp"
 #include"Object.hpp"
 
-namespace Diligent
+namespace Diligent 
 {
+namespace
+{
+    #include"../assets//structures.fxh"
+}
 	SampleBase* CreateSample()
 	{
         return new MObject();
 	}
+    void MObject::CreateObject()
+    {
+        std::array<float4, Object::NumVertices> ObjPositions{};
+        for (Uint32 v = 0; v < Object::NumVertices; ++v)
+        {
+            ObjPositions[v] = Object::Positions[v];
+        }
+
+        std::array<uint4, Object::NumIndices/3> ObjIndices{};
+        for (size_t tri = 0; tri <ObjIndices.size(); ++tri)
+        {
+            const auto* src_idx{&Object::Indices[tri * 3]};
+            ObjIndices[tri] = {src_idx[0],
+                               src_idx[1],
+                               src_idx[2],0};
+        }
+        ObjectData Data;
+
+        std::memcpy(Data.Positions, ObjPositions.data(), ObjPositions.size() * sizeof(ObjPositions[0]));
+        std::memcpy(Data.Indices, ObjIndices.data(), ObjIndices.size() * sizeof(ObjIndices[0]));
+
+        BufferDesc bufDesc;
+        bufDesc.Name = "Object and Index Buffer";
+        bufDesc.Usage = USAGE_IMMUTABLE;
+        bufDesc.BindFlags = BIND_UNIFORM_BUFFER;
+        bufDesc.Size      = sizeof(Data);
+
+        BufferData bufData;
+        bufData.pData = &Data;
+        bufData.DataSize = sizeof(Data);
+
+        m_pDevice->CreateBuffer(bufDesc, &bufData, &m_ObjectBuffer);
+        VERIFY_EXPR(m_ObjectBuffer != nullptr);
+
+
+    }
     void MObject::CreateMeshShaderPipeline()
     {
         GraphicsPipelineStateCreateInfo PSOCreateInfo;
@@ -22,6 +62,8 @@ namespace Diligent
        // PSOCreateInfo.GraphicsPipeline.RasterizerDesc.FrontCounterClockwise = False;
         PSOCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable = False;
         PSOCreateInfo.GraphicsPipeline.PrimitiveTopology=PRIMITIVE_TOPOLOGY_UNDEFINED;
+
+        PSOCreateInfo.PSODesc.ResourceLayout.DefaultVariableType = SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE;
         
         ShaderCreateInfo ShaderCI;
         ShaderCI.SourceLanguage = SHADER_SOURCE_LANGUAGE_GLSL;
@@ -38,7 +80,7 @@ namespace Diligent
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "dillMS.msh";
+            ShaderCI.FilePath        = "data_loadMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
@@ -48,7 +90,7 @@ namespace Diligent
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "dillPS.psh";
+            ShaderCI.FilePath        = "data_loadPS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }
@@ -57,6 +99,9 @@ namespace Diligent
 
         m_pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &m_pPSO);
         VERIFY_EXPR(m_pPSO != nullptr);
+        m_pPSO->CreateShaderResourceBinding(&m_pSRB, true);
+
+        m_pSRB->GetVariableByName(SHADER_TYPE_MESH, "ObjData")->Set(m_ObjectBuffer);
 
     }
 	void MObject::CreatePipeline()
@@ -115,6 +160,8 @@ namespace Diligent
 	void MObject::Initialize(const SampleInitInfo& InitInfo)
 	{
         SampleBase::Initialize(InitInfo);
+        CreateObject();
+
         CreateMeshShaderPipeline();
 
         
@@ -140,15 +187,13 @@ namespace Diligent
       
 
        
-        // Set the pipeline state
         m_pImmediateContext->SetPipelineState(m_pPSO);
-        // Commit shader resources. RESOURCE_STATE_TRANSITION_MODE_TRANSITION mode
-        // makes sure that resources are transitioned to required states.
+        m_pImmediateContext->CommitShaderResources(m_pSRB, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
+        
 
-        DrawMeshAttribs drawAttrs; // This is an indexed draw call
+        DrawMeshAttribs drawAttrs;
         drawAttrs.ThreadGroupCount = 1;
         drawAttrs.Flags            = DRAW_FLAG_VERIFY_ALL;
-        // Verify the state of vertex and index buffers
         drawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
         m_pImmediateContext->DrawMesh(drawAttrs);
 	}

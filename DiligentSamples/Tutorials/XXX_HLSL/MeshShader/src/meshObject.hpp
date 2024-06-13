@@ -16,12 +16,16 @@ namespace Diligent
 
     private:
         RefCntAutoPtr<IPipelineState> m_pPSO;
-
+        RefCntAutoPtr<IShaderResourceBinding> m_pSRB;
         RefCntAutoPtr<IBuffer> m_VertexBuffer;
         RefCntAutoPtr<IBuffer> m_IndexBuffer;
-        
+
+        RefCntAutoPtr<IBuffer> m_ObjectBuffer;
+        void CreateObject();
+
         void CreatePipeline();
         void CreateMeshShaderPipeline();
+
 	};
 
 }

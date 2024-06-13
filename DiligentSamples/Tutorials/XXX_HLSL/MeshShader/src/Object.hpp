@@ -13,26 +13,27 @@ namespace Diligent
 {
 	namespace Object
 	{
-        static constexpr Uint32 NumVertices = 4 * 6;
-        static constexpr Uint32 NumIndices = 3 * 2 * 6;
+        static constexpr Uint32 NumVertices = 24;
+    static constexpr Uint32 NumIndices  = 3 * 2 * 6;
+    ;
 
        
-	    const std::array<float3, NumVertices> Positions =
-            {
-                float3{-1, -1, -1}, float3{-1, +1, -1}, float3{+1, +1, -1}, float3{+1, -1, -1}, // Bottom
-                float3{-1, -1, -1}, float3{-1, -1, +1}, float3{+1, -1, +1}, float3{+1, -1, -1}, // Front
-                float3{+1, -1, -1}, float3{+1, -1, +1}, float3{+1, +1, +1}, float3{+1, +1, -1}, // Right
-                float3{+1, +1, -1}, float3{+1, +1, +1}, float3{-1, +1, +1}, float3{-1, +1, -1}, // Back
-                float3{-1, +1, -1}, float3{-1, +1, +1}, float3{-1, -1, +1}, float3{-1, -1, -1}, // Left
-                float3{-1, -1, +1}, float3{+1, -1, +1}, float3{+1, +1, +1}, float3{-1, +1, +1}  // Top
+	   const std::array<float3, NumVertices> Positions = {
+            float3{-1, -1, -1}, float3{-1, +1, -1}, float3{+1, +1, -1}, float3{+1, -1, -1}, // Bottom
+            float3{-1, -1, -1}, float3{-1, -1, +1}, float3{+1, -1, +1}, float3{+1, -1, -1}, // Front
+            float3{+1, -1, -1}, float3{+1, -1, +1}, float3{+1, +1, +1}, float3{+1, +1, -1}, // Right
+            float3{+1, +1, -1}, float3{+1, +1, +1}, float3{-1, +1, +1}, float3{-1, +1, -1}, // Back
+            float3{-1, +1, -1}, float3{-1, +1, +1}, float3{-1, -1, +1}, float3{-1, -1, -1}, // Left
+            float3{-1, -1, +1}, float3{+1, -1, +1}, float3{+1, +1, +1}, float3{-1, +1, +1}  // Top
         };
         const std::array<Uint32, NumIndices> Indices =
             {
-               2, 0, 1, 2, 3, 0, 4, 6, 5, 4,
-               7, 6, 8, 10, 9, 8, 11, 10, 12,
-               14, 13, 12, 15, 14, 16, 18, 17, 
-               16, 19, 18, 20, 21, 22, 20, 22, 23
-            };
+                2, 0, 1, 2, 3, 0,
+                4, 6, 5, 4, 7, 6,
+                8, 10, 9, 8, 11, 10,
+                12, 14, 13, 12, 15, 14,
+                16, 18, 17, 16, 19, 18,
+                20, 21, 22, 20, 22, 23};
 
 		enum VERTEX_COMPONENT_FLAGS :Uint32
 		{
