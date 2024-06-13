@@ -24,6 +24,9 @@ set(SHADERS
 	assets/tidPS.psh
 	assets/dillMS.msh
 	assets/dillPS.psh
+	assets/data_loadMS.msh
+	assets/data_loadPS.psh
+	assets/structures.fxh
     	
 )
 
