@@ -1,0 +1,41 @@
+struct ObjectData
+{
+    float4 positions[3];
+    uint3 Indices[1];
+
+    
+};
+
+
+struct PSInput
+{
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR0;
+};
+
+
+
+[numthreads(3,1,1)]
+[outputtopology("triangle")]
+void main(
+    in uint I:SV_GroupIndex,
+    in uint gid:SV_GroupThreadID,
+    out indices uint3 tris[1],
+    out vertices PSInput verts[3]
+)
+{
+    SetMeshOutputCounts(3,1);
+    ObjectData ObjData;
+    ObjData.positions[0]=float4(-0.5,0.0,0.0,1.0);
+    ObjData.positions[1]=float4(0.5,0.0,0.0,1.0);
+    ObjData.positions[2]=float4(0.0,-0.5,0.0,1.0);
+    ObjData.Indices[0]=uint3(0,1,2);
+   
+
+    verts[I].Position=ObjData.positions[I];
+    verts[I].Color=float4(1.0,0.0,0.0,1.0);
+    if(I<3)
+    {
+        tris[I]=ObjData.Indices[I];
+    }
+}

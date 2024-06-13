@@ -61,7 +61,8 @@ void MeshShader::CreateMeshPipeline()
 void MeshShader::Initialize(const SampleInitInfo& InitInfo)
 {
     SampleBase::Initialize(InitInfo);
-    CreateMeshPipeline();
+    // CreateMeshPipeline();
+    
 }
 
 void MeshShader::Update(double ctime, double etime)

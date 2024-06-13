@@ -37,8 +37,8 @@ namespace Diligent
         {
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
-            ShaderCI.EntryPoint      = "MSMain";
-            ShaderCI.FilePath        = "bezierMS.msh";
+            ShaderCI.EntryPoint      = "main";
+            ShaderCI.FilePath        = "dillMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
@@ -47,8 +47,8 @@ namespace Diligent
         {
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
-            ShaderCI.EntryPoint      = "PSMain";
-            ShaderCI.FilePath        = "bezierPS.psh";
+            ShaderCI.EntryPoint      = "main";
+            ShaderCI.FilePath        = "dillPS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }
@@ -120,12 +120,12 @@ namespace Diligent
         
 		
 	
-        
+        /*
         m_VertexBuffer               = Object::CreateVertexBuffer(m_pDevice, Object::VERTEX_COMPONENT_FLAG_POSITION);
         VERIFY_EXPR(m_VertexBuffer != nullptr);
 		m_IndexBuffer                = Object::CreateIndexBuffer(m_pDevice);
         VERIFY_EXPR(m_IndexBuffer != nullptr);
-			
+	    */
 
 	}
 	void MObject::Render()
