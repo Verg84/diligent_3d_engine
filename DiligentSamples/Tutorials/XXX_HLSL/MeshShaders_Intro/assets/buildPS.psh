@@ -1,0 +1,11 @@
+struct PSOut
+{
+    float4 color : SV_TARGET;
+};
+
+void main(
+    out PSOut ps
+)
+{
+    ps.color = float4(1.0, 0.0, 0.0, 1.0);
+}

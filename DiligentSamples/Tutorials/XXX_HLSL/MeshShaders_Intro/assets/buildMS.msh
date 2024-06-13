@@ -1,0 +1,94 @@
+#define MAX_MESHLET_SIZE 128 
+#define GROUP_SIZE MAX_MESHLET_SIZE 
+#define ROOT_SIG "CBV(b0),CBV(b1),CBV(b2),SRV(t0),SRV(t1),SRV(t2),SRV(t3)"
+
+struct Meshlet
+{
+    uint32_t VertCount;
+    uint32_t VertOffset;
+    uint32_t PrimCount;
+    uint32_t PrimOffset;
+    DirectX::XMFLOAT3 AABBMin; 
+    DirectX::XMFLOAT3 AABBMax; 
+    DirectX::XMFLOAT4 NormalCone;
+};
+
+struct MeshInfo
+{
+    uint32_t IndexBytes;
+    uint32_t MeshletCount;
+    uint32_t LastMeshletSize;
+};
+
+ConstantBuffer<Constants>   Constants : register(b0); 
+ConstantBuffer<Instance>    Instance : register(b1); 
+ConstantBuffer<MeshInfo>    MeshInfo : register(b2); 
+StructuredBuffer<Vertex>    Vertices : register(t0); 
+StructuredBuffer<Meshlet>   Meshlets : register(t1); 
+ByteAddressBuffer           UniqueVertexIndices : register(t2); 
+StructuredBuffer<uint>      PrimitiveIndices : register(t3);
+
+uint3 GetPrimitive(Meshlet m, uint index) 
+{ 
+    uint3 primitiveIndex = PrimitiveIndices[m.PrimOffset + index]); 
+    return uint3(primitiveIndex & 0x3FF, (primitiveIndex >> 10) & 0x3FF, (primitiveIndex >> 20) & 0x3FF);  
+}
+ 
+uint GetVertexIndex(Meshlet m, uint localIndex) 
+{ 
+    localIndex = m.VertOffset + localIndex; 
+    if (MeshInfo.IndexBytes == 4) // 32-bit Vertex Indices 
+    { 
+        return UniqueVertexIndices.Load(localIndex * 4); 
+    } 
+    else // 16-bit Vertex Indices 
+    { 
+        // Byte address must be 4-byte aligned. 
+        uint wordOffset = (localIndex & 0x1); 
+        uint byteOffset = (localIndex / 2) * 4; 
+ 
+        // Grab the pair of 16-bit indices, shift & mask off proper 16-bits. 
+        uint indexPair = UniqueVertexIndices.Load(byteOffset); 
+        uint index = (indexPair >> (wordOffset * 16)) & 0xffff; 
+ 
+        return index; 
+    } 
+} 
+ 
+VertexOut GetVertexAttributes(uint meshletIndex, uint vertexIndex) 
+{ 
+    Vertex v = Vertices[vertexIndex]; 
+
+    float4 positionWS = mul(float4(v.Position, 1), Instance.World); 
+ 
+    VertexOut vout; 
+    vout.PositionVS   = mul(positionWS, Constants.View).xyz; 
+    vout.PositionHS   = mul(positionWS, Constants.ViewProj); 
+    vout.Normal       = mul(float4(v.Normal, 0), Instance.WorldInvTrans).xyz; 
+    vout.MeshletIndex = meshletIndex; 
+ 
+    return vout; 
+} 
+[RootSignature(ROOT_SIG)] 
+[NumThreads(GROUP_SIZE, 1, 1)] 
+[OutputTopology("triangle")] 
+void main( 
+    uint gtid : SV_GroupThreadID, 
+    uint gid : SV_GroupID, 
+    out indices uint3 tris[MAX_MESHLET_SIZE], 
+    out vertices VertexOut verts[MAX_MESHLET_SIZE] 
+) 
+{ 
+    Meshlet m = Meshlets[gid]; 
+    SetMeshOutputCounts(m.VertCount, m.PrimCount); 
+    if (gtid < m.PrimCount) 
+    { 
+        tris[gtid] = GetPrimitive(m, gtid); 
+    } 
+ 
+    if (gtid < m.VertCount) 
+    { 
+        uint vertexIndex = GetVertexIndex(m, gtid); 
+        verts[gtid] = GetVertexAttributes(gid, vertexIndex); 
+    } 
+} 

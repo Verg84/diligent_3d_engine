@@ -40,15 +40,15 @@ void MeshShader::CreateMeshPipeline()
         sci.Desc.Name = "MESH_SHADER.ms";
         sci.Desc.ShaderType = SHADER_TYPE_MESH;
         sci.EntryPoint      = "main";
-        sci.FilePath        = "MS.msh";
+        sci.FilePath        = "buildMS.msh";
         m_pDevice->CreateShader(sci, &MS);
     }
     RefCntAutoPtr<IShader> PS;
     {
         sci.Desc.Name = "PIXEL_SHADER.psh";
         sci.Desc.ShaderType = SHADER_TYPE_PIXEL;
-        sci.EntryPoint      = "PSMain";
-        sci.FilePath        = "PS.psh";
+        sci.EntryPoint      = "main";
+        sci.FilePath        = "buildPS.psh";
         m_pDevice->CreateShader(sci, &PS);
     }
 
