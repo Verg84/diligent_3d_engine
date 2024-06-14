@@ -1,0 +1,37 @@
+#include"structures.fxh"
+
+cbuffer objConstants
+{
+	Constants g_Constants;
+};
+
+cbuffer objData
+{
+	ObjectData g_ObjectData;
+};
+
+struct PSInput
+{
+	float4 Position:SV_POSITION;
+};
+
+[outputtopology("triangle")]
+[numthreads(24,1,1)]
+void main(
+	in uint I:SV_GroupIndex,
+	out indices uint3 tris[12],
+	out vertices PSInput verts[24]
+)
+{
+	SetMeshOutputCounts(24,12);
+
+	verts[I].Position=mul(float4(g_ObjectData.Positions[I].xyz,1.0),g_Constants.ViewProjMat);
+	if(I<12)
+	{
+		tris[I]=g_ObjectData.Indices[I].xyz;
+	}
+
+	
+
+}
+

@@ -17,14 +17,23 @@ namespace Diligent
     private:
         RefCntAutoPtr<IPipelineState> m_pPSO;
         RefCntAutoPtr<IShaderResourceBinding> m_pSRB;
+       
         RefCntAutoPtr<IBuffer> m_VertexBuffer;
         RefCntAutoPtr<IBuffer> m_IndexBuffer;
 
         RefCntAutoPtr<IBuffer> m_ObjectBuffer;
         void CreateObject();
 
+        RefCntAutoPtr<IBuffer> m_pConstants;
+        void CreateConstantsBuffer();
+
         void CreatePipeline();
         void CreateMeshShaderPipeline();
+
+        float4x4 m_ViewMat;
+        float4x4 m_ViewProjMat;
+
+        const float m_FOV = PI_F / 4.0f;
 
 	};
 

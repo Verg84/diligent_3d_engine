@@ -1,5 +1,6 @@
 #include"meshObject.hpp"
 #include"Object.hpp"
+#include"MapHelper.hpp"
 
 namespace Diligent 
 {
@@ -11,6 +12,16 @@ namespace
 	{
         return new MObject();
 	}
+    void MObject::CreateConstantsBuffer()
+    {
+        BufferDesc cBuffer;
+        cBuffer.Name = "Mesh shader constants";
+        cBuffer.BindFlags = BIND_UNIFORM_BUFFER;
+        cBuffer.Usage     = USAGE_DYNAMIC;
+        cBuffer.CPUAccessFlags = CPU_ACCESS_WRITE;
+        cBuffer.Size           = sizeof(Constants);
+        m_pDevice->CreateBuffer(cBuffer, nullptr, &m_pConstants);
+    }
     void MObject::CreateObject()
     {
         std::array<float4, Object::NumVertices> ObjPositions{};
@@ -80,7 +91,7 @@ namespace
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "data_loadMS.msh";
+            ShaderCI.FilePath        = "constMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
@@ -90,7 +101,7 @@ namespace
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "data_loadPS.psh";
+            ShaderCI.FilePath        = "constPS.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }
@@ -101,7 +112,8 @@ namespace
         VERIFY_EXPR(m_pPSO != nullptr);
         m_pPSO->CreateShaderResourceBinding(&m_pSRB, true);
 
-        m_pSRB->GetVariableByName(SHADER_TYPE_MESH, "ObjData")->Set(m_ObjectBuffer);
+        m_pSRB->GetVariableByName(SHADER_TYPE_MESH, "objData")->Set(m_ObjectBuffer);
+        m_pSRB->GetVariableByName(SHADER_TYPE_MESH, "objConstants")->Set(m_pConstants);
 
     }
 	void MObject::CreatePipeline()
@@ -161,7 +173,7 @@ namespace
 	{
         SampleBase::Initialize(InitInfo);
         CreateObject();
-
+        CreateConstantsBuffer();
         CreateMeshShaderPipeline();
 
         
@@ -184,11 +196,15 @@ namespace
         m_pImmediateContext->ClearRenderTarget(pRTV, ClearColor, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
         m_pImmediateContext->ClearDepthStencil(pDSV, CLEAR_DEPTH_FLAG, 1.f, 0, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 
-      
-
        
         m_pImmediateContext->SetPipelineState(m_pPSO);
         m_pImmediateContext->CommitShaderResources(m_pSRB, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
+
+        {
+            MapHelper<Constants> CBConstants(m_pImmediateContext, m_pConstants, MAP_WRITE, MAP_FLAG_DISCARD);
+            CBConstants->ViewMat = m_ViewMat.Transpose();
+            CBConstants->ViewProjMat = m_ViewProjMat.Transpose();
+        }
         
 
         DrawMeshAttribs drawAttrs;
@@ -200,5 +216,14 @@ namespace
 	void MObject::Update(double ctime, double etime)
 	{
         SampleBase::Update(ctime, etime);
+        
+        float4x4 RotationMatrix = float4x4::RotationY((float)ctime) * float4x4::RotationX(-PI_F * 0.1f);
+        float4x4 View           = float4x4::Translation(0.f, 0.0f, 5.0f);
+
+        auto SrfPreTransform = GetSurfacePretransformMatrix(float3{0, 0, 1});
+        auto Proj            = GetAdjustedProjectionMatrix(m_FOV, 1.f, 1000.f);
+
+        m_ViewMat     = RotationMatrix * View * SrfPreTransform;
+        m_ViewProjMat = m_ViewMat * Proj;
 	}
     }
