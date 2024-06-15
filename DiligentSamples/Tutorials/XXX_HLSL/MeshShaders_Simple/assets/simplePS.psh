@@ -1,0 +1,17 @@
+struct MSOut{
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR0;
+};
+
+struct PSOutput
+{
+    float4 Color : SV_TARGET;
+};
+
+void main(
+    in MSOut msout,
+    out PSOutput PSOut
+)
+{
+    PSOut.Color = msout.Color;
+}

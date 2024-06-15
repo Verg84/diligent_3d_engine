@@ -1,0 +1,25 @@
+struct MSOut
+{
+	float4 Position:SV_POSITION;
+	float4 Color:COLOR0;
+};
+
+[outputtopology("triangle")]
+[numthreads(1,1,1)]
+void main(
+	out indices uint3 tris[1],
+	out vertices MSOut verts[3]
+)
+{
+	SetMeshOutputCounts(3,1);
+
+	verts[0].Position=float4(-0.5,0.0,0.0,1.0);
+	verts[0].Color=float4(1.0,0.0,0.0,1.0);
+	verts[1].Position=float4(0.5,0.0,0.0,1.0);
+	verts[1].Color=float4(0.0,1.0,0.0,1.0);
+	verts[2].Position=float4(0.0,-0.5,0.0,1.0);
+	verts[2].Color=float4(0.0,0.0,1.0,1.0);
+
+	tris[0]=uint3(0,1,2);
+	
+}
