@@ -29,6 +29,8 @@ set(SHADERS
 	assets/constMS.msh
 	assets/constPS.psh
 	assets/structures.fxh
+	assets/bezierMS.msh
+	assets/bezierPS.psh
     	
 )
 

@@ -91,7 +91,7 @@ namespace
             ShaderCI.Desc.Name = "Mesh Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_MESH;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "constMS.msh";
+            ShaderCI.FilePath        = "bezierMS.msh";
             m_pDevice->CreateShader(ShaderCI, &MS);
             
         }
@@ -101,7 +101,7 @@ namespace
             ShaderCI.Desc.Name = "Pixel Shader";
             ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
             ShaderCI.EntryPoint      = "main";
-            ShaderCI.FilePath        = "constPS.psh";
+            ShaderCI.FilePath        = "bezier.psh";
             m_pDevice->CreateShader(ShaderCI, &PS);
            
         }
@@ -110,11 +110,12 @@ namespace
 
         m_pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &m_pPSO);
         VERIFY_EXPR(m_pPSO != nullptr);
+        /*
         m_pPSO->CreateShaderResourceBinding(&m_pSRB, true);
 
         m_pSRB->GetVariableByName(SHADER_TYPE_MESH, "objData")->Set(m_ObjectBuffer);
         m_pSRB->GetVariableByName(SHADER_TYPE_MESH, "objConstants")->Set(m_pConstants);
-
+        */
     }
 	void MObject::CreatePipeline()
 	{
@@ -172,8 +173,8 @@ namespace
 	void MObject::Initialize(const SampleInitInfo& InitInfo)
 	{
         SampleBase::Initialize(InitInfo);
-        CreateObject();
-        CreateConstantsBuffer();
+        // CreateObject();
+        // CreateConstantsBuffer();
         CreateMeshShaderPipeline();
 
         
@@ -198,14 +199,14 @@ namespace
 
        
         m_pImmediateContext->SetPipelineState(m_pPSO);
-        m_pImmediateContext->CommitShaderResources(m_pSRB, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
-
+      //  m_pImmediateContext->CommitShaderResources(m_pSRB, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
+        /*
         {
             MapHelper<Constants> CBConstants(m_pImmediateContext, m_pConstants, MAP_WRITE, MAP_FLAG_DISCARD);
             CBConstants->ViewMat = m_ViewMat.Transpose();
             CBConstants->ViewProjMat = m_ViewProjMat.Transpose();
         }
-        
+        */
 
         DrawMeshAttribs drawAttrs;
         drawAttrs.ThreadGroupCount = 1;
@@ -217,6 +218,7 @@ namespace
 	{
         SampleBase::Update(ctime, etime);
         
+        /*
         float4x4 RotationMatrix = float4x4::RotationY((float)ctime) * float4x4::RotationX(-PI_F * 0.1f);
         float4x4 View           = float4x4::Translation(0.f, 0.0f, 5.0f);
 
@@ -225,5 +227,6 @@ namespace
 
         m_ViewMat     = RotationMatrix * View * SrfPreTransform;
         m_ViewProjMat = m_ViewMat * Proj;
+        */
 	}
     }
