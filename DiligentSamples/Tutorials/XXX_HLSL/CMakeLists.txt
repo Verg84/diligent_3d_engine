@@ -8,4 +8,5 @@ add_subdirectory(MeshShader)
 add_subdirectory(MeshShaders_Intro)
 add_subdirectory(MeshShaders_Simple)
 add_subdirectory(MeshShaders_LoadData)
+add_subdirectory(MeshShaders_Constants)
 
