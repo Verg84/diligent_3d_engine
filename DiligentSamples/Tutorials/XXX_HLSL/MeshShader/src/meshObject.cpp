@@ -210,7 +210,6 @@ namespace
 
         DrawMeshAttribs drawAttrs;
         drawAttrs.ThreadGroupCount = 1;
-        drawAttrs.Flags            = DRAW_FLAG_VERIFY_ALL;
         drawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
         m_pImmediateContext->DrawMesh(drawAttrs);
 	}
