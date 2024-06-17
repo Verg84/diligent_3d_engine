@@ -25,5 +25,6 @@ namespace Diligent
 
         float4x4 g_ViewMat;
         float4x4 g_ViewProjMat;
+        const float m_FOV = PI_F / 4.0f;
 	};
 }

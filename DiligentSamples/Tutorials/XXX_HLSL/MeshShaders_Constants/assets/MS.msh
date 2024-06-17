@@ -25,7 +25,7 @@ void main(
 {
 	SetMeshOutputCounts(24,12);
 	
-	PSIn.verts[I]=mul(float4(g_ObjectData.Positions[I],1.0),g_Constants.ViewProjMat);
+	verts[I].Position=mul(float4(g_ObjectData.Positions[I].xyz,1.0),g_Constants.ViewProjMat);
 	if(I<12)
 	{
 		tris[I]=g_ObjectData.Indices[I].xyz;

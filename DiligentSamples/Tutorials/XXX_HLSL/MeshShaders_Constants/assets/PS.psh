@@ -5,7 +5,7 @@ struct PSIn
 
 struct PSOut
 {
-    float Color : SV_TARGET;
+    float4 Color : SV_TARGET;
 };
 
 void main(
