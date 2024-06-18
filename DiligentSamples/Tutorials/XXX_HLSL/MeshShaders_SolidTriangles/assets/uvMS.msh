@@ -1,0 +1,43 @@
+static const float2 Triangle_Vertices[]=
+{
+	{0.00,-1.00},		// 0
+	{0.150,-0.500},		// 1
+	{0.150,0.00},		// 2
+	{0.150,0.500},		// 3
+	{1.00,1.00},		// 4
+	{-0.300,1.00},		// 5
+	{-0.165,0.500},		// 6
+	{-0.165,0.00},		// 7
+	{-0.165,-0.500},	// 8
+	{-0.300,-1.00}		// 9
+};
+
+static const uint3 Triangle_Indices[]=
+{
+	{4,5,6},
+	{4,6,2},
+	{0,1,2},
+	{2,3,4}
+};
+
+struct MSOut
+{
+	float4 Position:SV_POSITION;
+	float4 Color:COLOR0;
+};
+
+[numthreads(10,1,1)]
+[outputtopology("triangle")]
+void main(
+	in uint I:SV_GroupThreadID,
+	out indices uint3 tris[4],
+	out vertices MSOut verts[10])
+{
+	SetMeshOutputCounts(7,4);
+	verts[I].Position=float4(Triangle_Vertices[I],0.0,1.0);
+	verts[I].Color=float4(0.6,0.8,0.2,1.0);
+	if(I<7)
+	{
+		tris[I]=Triangle_Indices[I];
+	}
+}
