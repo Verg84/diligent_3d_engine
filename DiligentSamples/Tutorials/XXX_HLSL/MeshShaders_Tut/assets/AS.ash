@@ -1,4 +1,4 @@
-#inlude"structures.fxh"
+#include"structures.fxh"
 
 // draw tasks
 StructuredBuffer<DrawTask> DrawTasks;
@@ -44,7 +44,7 @@ float CalcLevelOfDetail(float3 cubeCenter,float radius)
 	// sphere size in screen space
 	float size=g_Constants.CoTanHalfFov*radius/sqrt(dist2-radius*radius);
 	// Calculate level of detail
-	float level=clammp(1.0-size,0.0,1.0);
+	float level=clamp(1.0-size,0.0,1.0);
 	return level;
 }
 
@@ -65,15 +65,15 @@ void main(
 	GroupMemoryBarrierWithGroupSync();
 
 	// Read Task arguments
-	cost uint gid=wg*GROUP_SIZE+I;
-	DrawTask task=drawTasks[gid];
+	const uint gid=wg*GROUP_SIZE+I;
+	DrawTask task=DrawTasks[gid];
 	float3 scale=task.Scale;
 	float3 pos=float3(task.BasePos,0.0).xyz;
 	// Frustum Culling
-	if(g_Constants.FrustumCulling==0||IsVisible(pos,g_Constants.SphereRadius.x*scale))
+	if(g_Constants.FrustumCulling==0||IsVisible(pos,g_CubeData.SphereRadius.x*scale))
 	{
 		uint index=0;
-		InterlockedAdds(s_TaskCount,1,index);
+		InterlockedAdd(s_TaskCount,1,index);
 		s_Payload.PosX[index]=pos.x;
 		s_Payload.PosY[index]=pos.y;
 		s_Payload.PosZ[index]=pos.z;

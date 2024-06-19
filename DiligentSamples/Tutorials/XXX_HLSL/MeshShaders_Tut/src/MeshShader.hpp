@@ -22,7 +22,7 @@ namespace Diligent
         void CreateConstantsBuffer();
         void CreateCubeObject();
         void CreateDrawTasks();
-
+        
         RefCntAutoPtr<IPipelineState> m_pPSO;
         RefCntAutoPtr<IShaderResourceBinding> m_pSRB;
         RefCntAutoPtr<IBuffer>                m_CubeBuffer;
