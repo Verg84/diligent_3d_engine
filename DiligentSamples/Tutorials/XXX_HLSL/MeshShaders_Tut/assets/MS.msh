@@ -1,0 +1,62 @@
+#include"structures.fxh"
+
+// Global Variables
+cbuffer cbConstants
+{
+	Constants g_Constants;
+};
+
+// Object Geometry
+cbuffer cbCubeData
+{	
+	CubeData g_CubeData;
+};
+
+// output of mesh shader , input to pixel shader
+struct PSInput
+{
+	float4 Pos:SV_POSITION;
+	float4 Color:COLOR;
+}
+
+// used to display LOD as color
+float4 Rainbow(float factor)
+{
+	float h=factor/1.35;
+	float3 col=float3(
+			abs(h*6.0-3.0)-1.0,
+			2.0-abs(h*6.0-2.0),
+			2.0-abs(h*6.0-4.0));
+	return float4(clamp(col,float3(0,0,0),float3(1.0,1.0,1.0)),1.0);
+}
+
+[numthreads(24,1,1)]
+[outputtopology("triangle")]
+void main(
+	in uint I:SV_GroupIndex,		// thread index to access MS output
+	in uint gid:SV_GroupID,			// work group index to access AS output
+	in payload Payload payload,
+	out indices uint3 tris[12],
+	out vertices PSInput verts[24])
+{
+	SetMeshOutputCounts(24,12);
+
+	// read AS output for this group
+	float3 pos;
+	float scale=payload.Scale[gid];
+	float LOD=payload.LODs[gid];
+	pos.x=payload.PosX[gid];
+	pos.y=payload.PosY[gid];
+	pos.z=payload.PosZ[gid];
+
+	// each thread handles a vertex
+	verts[I].Pos=mul(float4(g_CubeData.Positions[I].xyz*scale,1.0),g_Constants.ViewProjMat);
+	verts[I].Color=Rainbow(LOD);
+
+	// only first 12 indices write indices
+	// don't access the array beyond its size
+	if(I<12)
+	{
+		tris[I]=g_CubeData.Indices[I].xyz;
+	}
+}
