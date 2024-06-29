@@ -1,0 +1,41 @@
+static const float2 Positions[]=
+{
+	{0.5,0.0},
+	{-0.5,0.0},
+	{0.0,-0.5}
+};
+
+static const float3 Colors[]=
+{
+	{1.0,0.0,0.0},
+	{0.0,1.0,0.0},
+	{0.0,0.0,1.0}
+};
+
+static const uint3 Index[]=
+{
+	{0,1,2}
+};
+
+struct MSOut
+{
+	float4 Position:SV_POSITION;
+	float4 Color:COLOR;
+};
+
+[outputtopology("triangle")]
+[numthreads(32,1,1)]
+void main(
+	in uint tid:SV_GroupThreadID,
+	out indices uint3 triangles[1],
+	out vertices MSOut verts[3]
+)
+{
+	const uint numVerts=sizeof(Positions)/sizeof(float2);
+	const uint numPrims=sizeof(Index)/sizeof(uint3);
+	SetMeshOutputCounts(numVerts,numPrims);
+
+	verts[tid].Position=float4(Positions[tid],0.0,1.0);
+	verts[tid].Color=float4(Colors[tid],1.0);
+	triangles[tid]=Index[tid];
+}
