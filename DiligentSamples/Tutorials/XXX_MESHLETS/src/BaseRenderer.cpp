@@ -7,3 +7,7 @@ Diligent::BaseRenderer::BaseRenderer(
     m_pEngineFactory(engineFactory), m_pDevice(device), m_pSwapChain(swapChain)
 {
 }
+
+void Diligent::BaseRenderer::WindowResize()
+{
+}

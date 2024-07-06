@@ -4,12 +4,14 @@ project(Meshlets CXX)
 
 set(SOURCE
     src/BaseRenderer.cpp
-    
+	src/BaseScene.cpp
+    src/MeshletRenderer.cpp
 )
 
 set(INCLUDE
     src/BaseRenderer.hpp
-    
+    src/BaseScene.hpp
+	src/MeshletRenderer.hpp
 )
 
 set(SHADERS
