@@ -6,7 +6,7 @@ SampleBase* CreateSample()
 {
     return new MeshShader();
 }
-bool MeshShader::read_next_line(std::fstream &lstrm,std::string &lstr)
+bool MeshShader::read_next_line(std::ifstream &lstrm,std::string &lstr)
 {
     while (getline(lstrm, lstr))
     {
@@ -20,14 +20,14 @@ bool MeshShader::read_next_line(std::fstream &lstrm,std::string &lstr)
 bool MeshShader::LoadOFF(const char* FilePath)
 {
 
-    std::fstream lstrm(FilePath);
-    if (!lstrm.is_open())
+    std::ifstream lstrm(FilePath);
+    if (lstrm.is_open())
         return false;  
     return true;
 }
 void MeshShader::Initialize(const SampleInitInfo& InitInfo)
 {   
-    VERIFY_EXPR(!LoadOFF("cube.off"));
+    VERIFY_EXPR(!LoadOFF("PS.psh"));
 
 }
 void MeshShader::Render()

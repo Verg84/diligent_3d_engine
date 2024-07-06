@@ -27,7 +27,7 @@ private:
     unsigned long nVertices; 
     unsigned long nEdges;
 
-    bool read_next_line(std::fstream& lstrm, std::string& lstr);
+    bool read_next_line(std::ifstream& lstrm, std::string& lstr);
     bool LoadOFF(const char *FilePath);
     
 
