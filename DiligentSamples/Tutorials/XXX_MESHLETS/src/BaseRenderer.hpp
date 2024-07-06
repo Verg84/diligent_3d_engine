@@ -32,11 +32,14 @@ namespace Diligent
             RefCntAutoPtr<IRenderDevice> &device,
             RefCntAutoPtr<ISwapChain> &swapchain);
 
-        RefCntAutoPtr<IPipelineState> m_pPSO;
-        RefCntAutoPtr<IEngineFactory> m_pEngineFactory;
-        RefCntAutoPtr<IRenderDevice>  m_pDevice;
-        RefCntAutoPtr<ISwapChain>     m_pSwapChain;
-        RefCntAutoPtr<IBuffer>        m_pConstants;
+        RefCntAutoPtr<IPipelineState>           m_pPSO;
+        RefCntAutoPtr<IShaderResourceBinding>   m_pSRB;
+        RefCntAutoPtr<IEngineFactory>           m_pEngineFactory;
+        RefCntAutoPtr<IRenderDevice>            m_pDevice;
+        RefCntAutoPtr<ISwapChain>               m_pSwapChain;
+        RefCntAutoPtr<IBuffer>                  m_pConstants;
+
+        BaseScene* m_pScene;
 	};
 
     inline std::ostream& operator<<(std::ostream& out, const BaseRenderer& renderer)
