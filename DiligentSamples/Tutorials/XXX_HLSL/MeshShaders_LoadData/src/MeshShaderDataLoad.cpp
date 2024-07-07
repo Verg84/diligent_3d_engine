@@ -46,7 +46,7 @@ void MeshShaderDataLoad::CreatePipelineMeshShader()
     }
     RefCntAutoPtr<IShader> PS;
     {
-        ShaderCI.Desc.Name = "Pixel Shadder";
+        ShaderCI.Desc.Name = "Pixel Shader";
         ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
         ShaderCI.EntryPoint     = "main";
         ShaderCI.FilePath        = "PS.psh";

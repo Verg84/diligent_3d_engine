@@ -21,13 +21,13 @@ bool MeshShader::LoadOFF(const char* FilePath)
 {
 
     std::ifstream lstrm(FilePath);
-    if (lstrm.is_open())
+    if (!lstrm.is_open())
         return false;  
     return true;
 }
 void MeshShader::Initialize(const SampleInitInfo& InitInfo)
 {   
-    VERIFY_EXPR(!LoadOFF("PS.psh"));
+    VERIFY_EXPR(!LoadOFF("cube.off"));
 
 }
 void MeshShader::Render()
