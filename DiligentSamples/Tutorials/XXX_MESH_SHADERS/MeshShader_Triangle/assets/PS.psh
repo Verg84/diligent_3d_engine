@@ -10,8 +10,8 @@ struct PSOut
 
 void main(
     in PSIn m,
-    out PSOut p)
+    out PSOut p
+)
 {
-    p.Color = float4(0.8, 0.2, 0.9, 1.0);
-
+    p.Color = float4(1.0, 0.0, 0.0, 1.0);
 }

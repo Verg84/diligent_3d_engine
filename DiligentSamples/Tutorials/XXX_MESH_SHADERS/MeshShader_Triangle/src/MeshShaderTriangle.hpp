@@ -1,8 +1,8 @@
-#include "SampleBase.hpp"
+#include"SampleBase.hpp"
 
 namespace Diligent
 {
-	class MeshShaderCube final :public SampleBase
+	class MeshShaderTriangle final :public SampleBase
 	{
     public:
         virtual void Initialize(const SampleInitInfo& InitInfo) override final;
@@ -10,15 +10,21 @@ namespace Diligent
         virtual void Render() override final;
         virtual const Char* GetSampleName()const override final
         {
-            return "Mesh Shader Cube";
+            return "Triangle Mesh Shader";
         }
 
     private:
         RefCntAutoPtr<IPipelineState> m_pPSO;
         RefCntAutoPtr<IShaderResourceBinding> m_SRB;
-        RefCntAutoPtr<IBuffer> m_CubeBuffer;
+        RefCntAutoPtr<IBuffer> m_TriangleBuffer;
 
-        void LoadCubeBuffers();
-        void CreatePipelineMS();
+        void CreatePipelineState();
+        void LoadTriangle();
+
+        struct TriangleData
+        {
+            float4 Positions[3];
+            uint4  Indices[1];
+        };
 	};
 }

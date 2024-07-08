@@ -1,0 +1,27 @@
+#include"structures.fxh"
+
+cbuffer cubeData
+{
+	CubeData g_CubeData;
+};
+
+struct PSIn
+{
+	float4 Position:SV_POSITION;
+};
+
+[outputtopology("triangle")]
+[numthreads(3,1,1)]
+void main(
+	in uint I:SV_GroupThreadID,
+	out indices uint3 tris[12],
+	out vertices PSIn verts[24]
+)
+{
+	SetMeshOutputCounts(24,12);
+	verts[I].Position=g_CubeData.Positions[I];
+	if(I<12)
+	{
+		tris[I]=g_CubeData.Indices[I].xyz;
+	}
+}
