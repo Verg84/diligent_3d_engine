@@ -15,7 +15,7 @@ set(INCLUDE
 set(SHADERS
     	assets/MS.msh	
     	assets/PS.psh
-	assets/structures.fxh)
+		assets/structures.fxh)
 
 set(ASSETS
     

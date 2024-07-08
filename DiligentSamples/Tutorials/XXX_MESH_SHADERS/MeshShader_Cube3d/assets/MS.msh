@@ -1,0 +1,33 @@
+#include"structures.fxh"
+
+cbuffer objectData
+{
+	ObjectData g_ObjectData;
+};
+
+cbuffer constants
+{
+	Constants g_Constants;
+};
+
+struct PSIn
+{
+	float4 Position:SV_POSITION;
+};
+
+[outputtopology("triangle")]
+[numthreads(24,1,1)]
+void main(
+	in uint I:SV_GroupThreadID,
+	out indices uint3 triangles[12],
+	out vertices PSIn verts[24]
+)
+{
+	SetMeshOutputCounts(24,12);
+	
+	verts[I].Position=mul(g_ObjectData.Positions[I],g_Constants.ProjViewMat);
+	if(I<24)
+	{
+		triangles[I]=g_ObjectData.Indices[I].xyz;
+	}
+}
